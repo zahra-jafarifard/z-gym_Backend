@@ -40,6 +40,7 @@ app.use(() => {
     throw new httpError('Could not find this route.', 404);
 });
 
+//Status table Association
 Status.hasMany(User 
   ,{
     foreignKey: {
