@@ -19,7 +19,7 @@ exports.postCreate = (req , res , next) =>{
     })
     .then(createdCategory => {
         // console.log(createdCategory)
-        return res.status(201).json({message : `new category ${createdCategory.dataValues.category_name} created...`})
+        return res.status(200).json({message : `new category ${createdCategory.dataValues.category_name} created...`})
     })
     .catch(e =>{
         next(new httpError('Fail in Fetching categoryName ... ' , 500))
