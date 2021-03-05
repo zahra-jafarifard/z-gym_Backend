@@ -6,6 +6,9 @@ const { Op } = require("sequelize");
 
 exports.postCreate = (req , res , next) =>{
     const {name , description , icon , category} = req.body;
+    if (!req.file){
+        return next (new HttpError('no file in req.file...' , 422))
+    }
     // console.log('bodddy' , req.body)
     // if (!name || !description || !icon || !category ){
     //     throw(new httpError('Field(s) Is Empty...' , 422));
@@ -20,13 +23,13 @@ exports.postCreate = (req , res , next) =>{
         return Exercise.create({
             name : name,
             description:description,
-            icon:icon,
+            icon:req.file.path,
             categoryId:category
         })
     })
     .then(createdExercise => {
-        // console.log('exxxx' , createdExercise)
-        return res.status(201).json({message : `new exercise ${createdExercise.dataValues.exercise_name} created...`})
+        console.log('exxxxrrr' , createdExercise)
+        return res.status(201).json({message : `new exercise ${createdExercise.dataValues.name} created...`})
     })
     .catch((e) =>{
         next(new httpError(e, 500))
@@ -49,8 +52,11 @@ exports.postDelete = (req , res , next) =>{
 exports.postUpdate = (req , res , next) =>{
     let catId;
     const id = +req.body.id +1;
-    const { name , description , icon , category} = req.body;
+    const { name , description , category} = req.body;
     // console.log('reeeeeq' , req.body);
+    if (!req.file){
+        return next (new HttpError('no file in req.file...' , 422))
+    }
     Category.findOne({
         where:{
             category_name:category
@@ -79,11 +85,19 @@ exports.postUpdate = (req , res , next) =>{
         if (!exercise){
             return next(new HttpError('there is not this exercise...' , 404));
         }
+        if (!req.file){ 
         exercise.name = name;
         exercise.description = description;
-        exercise.icon = icon;
         exercise.categoryId = catId;
         return exercise.save();
+    }
+        else{
+        exercise.name = name;
+        exercise.description = description;
+        exercise.icon = req.file.path;
+        exercise.categoryId = catId;
+        return exercise.save();
+        }
     })
     .then(() => {
         res.status(200).json({message:'exercise name updated successfully...'})
@@ -105,12 +119,12 @@ exports.postList = (req , res , next) =>{
             }]
     })
     .then(exercises =>{
+        // console.log('exxxcaa' , exercises[0].dataValues)
         const exer = [];
         exercises.map(e => {
             exer.push(e.dataValues);
             // console.log('exxxcaa' , e.category.dataValues.category_name)
         })
-        // console.log('exxx' , exer);
         res.status(200).json({exercises:exer})
     })
     .catch(()=>{

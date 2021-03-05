@@ -79,9 +79,10 @@ app.use('/muscle', muscleRoute);
 app.use('/exercise', exerciseRoute);
 
 //handle 404 error
-app.use(() => {
-    throw new httpError('Could not find this route.', 404);
-});
+// app.use(() => {
+//   // console.log('eeee',e);
+//     throw new httpError('Could not find this route.', 404);
+// });
 
 //Status table Association
 Status.hasMany(User 
