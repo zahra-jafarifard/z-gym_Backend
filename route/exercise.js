@@ -3,6 +3,7 @@ const router = express.Router();
 
 const authCheck = require('../shared/authCheck');
 const exerciseController = require('../controller/exerciseController');
+const fileUpload = require('../shared/fileUpload');
 
 /**
  * @swagger
@@ -44,8 +45,7 @@ const exerciseController = require('../controller/exerciseController');
  *                   type: string
  *                   
 */
-
-router.post('/create' ,  exerciseController.postCreate);
+router.post('/create' , fileUpload.single('image') ,  exerciseController.postCreate);
 /**
  * @swagger
  * /exercise/delete:
@@ -116,7 +116,7 @@ router.post('/delete' ,  exerciseController.postDelete);
  *                   type: string
  *                   
 */
-router.post('/update' ,  exerciseController.postUpdate);
+router.post('/update' , fileUpload.single('image') ,  exerciseController.postUpdate);
 /**
  * @swagger
  * /users:

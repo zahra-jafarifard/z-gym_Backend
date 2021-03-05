@@ -45,9 +45,7 @@ exports.postRegister = (req , res , next)=>{
             // console.log('createdUUUser' , createdUser)
             return res.status(201).json({user:createdUser})
         })
-        .catch((e) =>{
-            next(new httpError(e, 500))
-        })
+        
     })
     .catch((e) => {
         next(new httpError(e , 500))
@@ -57,8 +55,8 @@ exports.postRegister = (req , res , next)=>{
 }
 exports.postLogin = (req , res , next)=>{
     const {mobile , password , rememberMe} = req.body;
-    console.log(req.body);
-    let token;
+    // console.log('reeeq',req.body);
+    // let token;
     if (!mobile || !password ){
         throw(new httpError('unauthurized  user...' , 401));
     }
@@ -89,7 +87,10 @@ exports.postLogin = (req , res , next)=>{
            }
         })
         .then(()=>{
-             res.status(200).json({user: user , token : token})
+            console.log('usser:', user.dataValues.mobile);
+            console.log('tokkkken:', token);
+
+             res.status(200).json({userMobile: user.dataValues.mobile , token : token})
         })
         .catch((err) => {
             next(new httpError(err, 500))
@@ -184,26 +185,25 @@ exports.postFetchMembers = (req , res , next) => {
         const mem=[];
         members.map(m => {
             mem.push(m.dataValues);
-            // console.log('mmm' , m.dataValues)
         })
-        res.status(200).json({members:mem });
+
+        res.json({members:mem });
     })
     .catch(e => {
-        // console.log(e);
-        next(new httpError(e , 500));
+        next(new httpError(e.message ,  500));
     })
 }
 
 exports.postSearchMembers = (req , res , next)=> {
     const{name , lastName , mobile, birthDay, weight, height, gender} =req.body;
-    if(!name && !lastName && !mobile  && !weight && !height && !gender){
+    // if(!name && !lastName && !mobile  && !weight && !height && !gender){
         //  User.findAll({})
         // .then(u=>{
         //     res.status(200).json({members:u})
         // })
         // .catch(e => next(new httpError(e , 500)))
-        throw(new httpError('unauthurized  user...' , 401));
-    }
+        // throw(new httpError('unauthurized  user...' , 401));
+    // }
     // console.log('boooody' , req.body)
     User.findAll({
         attributes:['name' , 'lastName' , 'mobile' , 'gender' , 'birthDay' ,'height' , 'weight' ],

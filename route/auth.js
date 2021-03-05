@@ -2,6 +2,8 @@ const express = require('express');
 const router = express.Router();
 const {check} = require('express-validator/check');
 
+// const authCheck = require('../shared/authCheck');
+
 const authController = require('../controller/authController');
 
 router.post('/login', authController.postLogin)

@@ -1,5 +1,8 @@
 const express = require('express');
 const bodyParser = require('body-parser');
+require('dotenv').config();
+const path = require('path');
+
 
 
 const swaggerJSDoc = require('swagger-jsdoc');
@@ -23,7 +26,7 @@ const swaggerDefinition = {
   },
   servers: [
     {
-      url: 'http://localhost:5000',
+      url: process.env.API_ADDRESS,
       description: 'Development server',
     },
   ],
@@ -41,8 +44,9 @@ const swaggerSpec = swaggerJSDoc(options);
 const app = express();
 app.use(bodyParser.json());
 
+app.use('/upload' , express.static(path.join('upload')));
 
-app.use('/GymRestAPI', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+app.use('/GymRestAPIs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 app.use((req,res,next) =>{
   res.setHeader('Access-Control-Allow-Origin' , '*');
   res.setHeader('Access-Control-Allow-Methods', '*');
@@ -109,8 +113,8 @@ sequelize
 .sync()
 // .sync({force:true})
 .then(() => {
-    app.listen(5000 , ()=>{
-        console.log('Server Connected... :)')
+    app.listen(process.env.PORT , ()=>{
+        console.log(`Your port is ${process.env.PORT}`);
     });
 })
 .catch(e => {

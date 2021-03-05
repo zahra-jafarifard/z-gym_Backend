@@ -13,9 +13,9 @@ module.exports = (req , res ,next)=> {
         }
         jwt.verify(token , 'mySecretKey')
         .then( decoded =>{
-            req.user= decoded.userId;
+            req.userId= decoded.userId;
             req.userMobile = decoded.mobile;
-            console.log('in authcheck file ::::',req.user , req.userMobile)
+            console.log('in authcheck file ::::',req.userId , req.userMobile)
         })
         .catch(e =>{
             next(new httpError(e , 500));

@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 
-const authCheck = require('../shared/authCheck');
+// const authCheck = require('../shared/authCheck');
 const categoryController = require('../controller/categoryController');
 /**
  * @swagger
