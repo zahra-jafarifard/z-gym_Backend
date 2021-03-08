@@ -14,7 +14,8 @@ exports.postCreate = (req , res , next) =>{
             throw(new httpError('categoryName is already exist... ' , 500))
         }
         return Category.create({
-            category_name : categoryName
+            category_name : categoryName,
+            flag:1
         })
     })
     .then(createdCategory => {

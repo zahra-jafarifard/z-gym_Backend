@@ -14,7 +14,8 @@ exports.postCreate = (req , res , next) =>{
             throw(new httpError('equipmentName is already exist... ' , 500))
         }
         return Equipment.create({
-            equipment_name : equipmentName
+            equipment_name : equipmentName,
+            flag:1
         })
     })
     .then(createdEquipment => {

@@ -19,7 +19,11 @@ const exercise = sequelize.define('exercise' , {
     },
     icon : {
         type: Sequelize.STRING,
-        // required:true
+        required:true
+    },
+    flag:{
+        type:Sequelize.BOOLEAN,
+        allowNull:true
     }
 
 })

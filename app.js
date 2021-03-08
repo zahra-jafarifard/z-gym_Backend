@@ -1,8 +1,10 @@
 const express = require('express');
+const app = express();
 const bodyParser = require('body-parser');
 require('dotenv').config();
 const path = require('path');
 
+app.use(bodyParser.json());
 
 
 const swaggerJSDoc = require('swagger-jsdoc');
@@ -41,8 +43,6 @@ const swaggerSpec = swaggerJSDoc(options);
 
 
 
-const app = express();
-app.use(bodyParser.json());
 
 app.use('/upload' , express.static(path.join('upload')));
 
@@ -79,10 +79,9 @@ app.use('/muscle', muscleRoute);
 app.use('/exercise', exerciseRoute);
 
 //handle 404 error
-// app.use(() => {
-//   // console.log('eeee',e);
-//     throw new httpError('Could not find this route.', 404);
-// });
+app.use(() => {
+    throw new httpError('Could not find this route.', 404);
+});
 
 //Status table Association
 Status.hasMany(User 
@@ -106,7 +105,7 @@ Group.hasMany(User
  User.belongsTo(Group);
 
 Exercise.belongsTo(Category);
-// Category.hasMany(Exercise);
+Category.hasMany(Exercise);
 
 
 

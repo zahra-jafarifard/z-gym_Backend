@@ -15,7 +15,8 @@ exports.postCreate = (req , res , next) =>{
             throw(new httpError('statusName is already exist... ' , 500))
         }
         return Status.create({
-            status_name : statusName
+            status_name : statusName,
+            flag:1
         })
     })
     .then(createdStatus => {

@@ -17,6 +17,10 @@ const userGroup = sequelize.define('userGroup' , {
         type: Sequelize.BOOLEAN,
         required:true
     },
+    flag:{
+        type:Sequelize.BOOLEAN,
+        allowNull:true
+    }
 
 })
 

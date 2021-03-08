@@ -15,6 +15,7 @@ exports.postCreate = (req , res , next) =>{
         }
         return Muscle.create({
             muscle_name : muscleName,
+            flag:1
         })
     })
     .then(createdMuscle => {

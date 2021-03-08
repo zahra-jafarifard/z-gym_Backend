@@ -34,7 +34,8 @@ exports.postRegister = (req , res , next)=>{
                     gender,
                     birthDay,
                     height,
-                    weight
+                    weight,
+                    flag:1
                 })
             }
             else{
@@ -276,7 +277,8 @@ exports.postCreateMember = (req , res , next) => {
                     height,
                     weight,
                     userStatusId : status,
-                    userGroupId : group
+                    userGroupId : group,
+                    flag:1
                 })
             }
             else{
@@ -372,6 +374,26 @@ exports.postUpdateMember = (req ,res ,next) => {
 };
 
 exports.postDeleteMember = (req ,res ,next) => {
-    console.log('postDeleteMember');
+    const {userId} = req.body;
+    console.log('postDeleteMember', userId);
+    
+    User.findOne({where :{
+        id:userId,
+        flag:1
+    }})
+    .then(user=>{
+        if(!user){
+            return next(new httpError('not found user...' , 404));
+        }
+        console.log('user id db', user.id);
+        user.flag=0
+        return user.save();
+    })
+    .then(()=>{
+        res.status(200).json({message:'Deleting is done...'})
+    })
+    .catch(()=>{
+        next(new httpError('Deleting Failed' , 500))
+    })
 
 }

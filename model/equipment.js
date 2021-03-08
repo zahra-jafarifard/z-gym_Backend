@@ -12,6 +12,10 @@ const equipment = sequelize.define('equipment' , {
     equipment_name : {
         type: Sequelize.STRING,
         required:true
+    },
+    flag:{
+        type:Sequelize.BOOLEAN,
+        allowNull:true
     }
 
 })

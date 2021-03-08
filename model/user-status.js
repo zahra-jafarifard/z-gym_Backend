@@ -12,6 +12,10 @@ const userStatus = sequelize.define('userStatus' , {
     status_name : {
         type: Sequelize.STRING,
         required:true
+    },
+    flag:{
+        type:Sequelize.BOOLEAN,
+        allowNull:true
     }
 
 })

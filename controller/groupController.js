@@ -16,7 +16,8 @@ exports.postCreate = (req , res , next) =>{
         }
         return Group.create({
             group_name : groupName,
-            group_status: groupSatus
+            group_status: groupSatus,
+            flag:1
         })
     })
     .then(createdGroup => {

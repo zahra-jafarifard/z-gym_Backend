@@ -24,11 +24,12 @@ exports.postCreate = (req , res , next) =>{
             name : name,
             description:description,
             icon:req.file.path,
-            categoryId:category
+            categoryId:category,
+            flag:1
         })
     })
     .then(createdExercise => {
-        console.log('exxxxrrr' , createdExercise)
+        // console.log('exxxxrrr' , createdExercise)
         return res.status(201).json({message : `new exercise ${createdExercise.dataValues.name} created...`})
     })
     .catch((e) =>{

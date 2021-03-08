@@ -30,7 +30,7 @@ const User = sequelize.define('User' , {
         required:true
     },
     birthDay : {
-        type: Sequelize.DATEONLY,
+        type: Sequelize.DATE,
         required:true
     },
     height : {
@@ -57,6 +57,10 @@ const User = sequelize.define('User' , {
     },
     rndNumber : {
         type: Sequelize.STRING
+    },
+    flag:{
+        type:Sequelize.BOOLEAN,
+        allowNull:true
     }
 
 })
