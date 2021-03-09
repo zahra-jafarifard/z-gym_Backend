@@ -167,6 +167,9 @@ exports.postSetNewPassword = (req , res , next)=>{
 
 exports.postFetchMembers = (req , res , next) => {
     return User.findAll({
+        where:{
+            flag:1
+        },
         attributes:['id','name' , 'lastName' , 'mobile' , 'gender' , 'birthDay' ,'height' , 'weight' ],
         include : [
             {
@@ -374,26 +377,30 @@ exports.postUpdateMember = (req ,res ,next) => {
 };
 
 exports.postDeleteMember = (req ,res ,next) => {
-    const {userId} = req.body;
-    console.log('postDeleteMember', userId);
+    const {id} = req.body;
+    console.log('postDeleteMember', id);
     
     User.findOne({where :{
-        id:userId,
+        id:id,
         flag:1
     }})
     .then(user=>{
+        // console.log('uuuussssserrr', user);
         if(!user){
             return next(new httpError('not found user...' , 404));
         }
-        console.log('user id db', user.id);
-        user.flag=0
-        return user.save();
+        else {
+            // console.log('user id db', user.id);
+            user.flag=0
+            return user.save();
+        }
     })
-    .then(()=>{
+    .then(deletedUser=>{
+        console.log('dddddd',deletedUser)
         res.status(200).json({message:'Deleting is done...'})
     })
-    .catch(()=>{
-        next(new httpError('Deleting Failed' , 500))
+    .catch((e)=>{
+        next(new httpError(e , 500))
     })
 
 }

@@ -29,10 +29,22 @@ exports.postCreate = (req , res , next) =>{
 };
 
 exports.postDelete = (req , res , next) =>{
-    const {statusId} = req.body;
-    Status.destroy({where :{
-        id:statusId
+    const {id} = req.body;
+    Status.findOne({where :{
+        id:id,
+        flag:1
     }})
+    .then(status=>{
+        console.log('staaatuuus', status);
+        if(!status){
+            return next(new httpError('not found status...' , 404));
+        }
+        else {
+            // console.log('status id db', status.id);
+            status.flag=0
+            return status.save();
+        }
+    })
     .then(()=>{
         res.status(200).json({message:'Deleting is done...'})
     })
@@ -67,6 +79,9 @@ exports.postUpdate = (req , res , next) =>{
 exports.postList = (req , res , next) =>{
 
     Status.findAll({
+        where:{
+            flag:1
+        },
         // attributes:['status_name']
     })
     .then(statuses =>{

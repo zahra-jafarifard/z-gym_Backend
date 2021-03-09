@@ -29,10 +29,22 @@ exports.postCreate = (req , res , next) =>{
 };
 
 exports.postDelete = (req , res , next) =>{
-    const {groupId} = req.body;
-    Group.destroy({where :{
-        id:groupId
+    const {id} = req.body;
+    Group.findOne({where :{
+        id:id,
+        flag:1
     }})
+    .then(group=>{
+        console.log('grooooup', group);
+        if(!group){
+            return next(new httpError('not found group...' , 404));
+        }
+        else {
+            // console.log('group id db', group.id);
+            group.flag=0
+            return group.save();
+        }
+    })
     .then(()=>{
         res.status(200).json({message:'Deleting is done...'})
     })
@@ -71,6 +83,9 @@ console.log('reeeeq' , req.body)
 exports.postList = (req , res , next) =>{
 
     Group.findAll({
+        where:{
+            flag:1
+        },
         // attributes:['group_name' , 'group_status' ]
     })
     .then(groups =>{

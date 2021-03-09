@@ -1,5 +1,6 @@
 const httpError = require('../shared/httpError');
 const Muscle = require('../model/muscle');
+const muscle = require('../model/muscle');
 
 exports.postCreate = (req , res , next) =>{
     const {muscleName} = req.body;
@@ -27,15 +28,27 @@ exports.postCreate = (req , res , next) =>{
 };
 
 exports.postDelete = (req , res , next) =>{
-    const {muscleId} = req.body;
-    Muscle.destroy({where :{
-        id:muscleId
+    const {id} = req.body;
+    Muscle.findOne({where :{
+        id:id,
+        flag:1
     }})
+    .then(muscle=>{
+        console.log('muuuuscle', muscle);
+        if(!muscle){
+            return next(new httpError('not found muscle...' , 404));
+        }
+        else {
+            // console.log('muscle id db', muscle.id);
+            muscle.flag=0
+            return muscle.save();
+        }
+    })
     .then(()=>{
         res.status(200).json({message:'Deleting is done...'})
     })
-    .catch(()=>{
-        next(new httpError('Deleting Failed' , 500))
+    .catch((e)=>{
+        next(new httpError(e , 500))
     })
 };
 
@@ -65,7 +78,10 @@ exports.postUpdate = (req , res , next) =>{
 exports.postList = (req , res , next) =>{
 
     Muscle.findAll({
-        attributes:['muscle_name']
+        where:{
+            flag:1
+        },
+        // attributes:['muscle_name']
     })
     .then(muscles =>{
         res.status(200).json({muscles:muscles})

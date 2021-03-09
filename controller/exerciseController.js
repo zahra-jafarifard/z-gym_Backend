@@ -2,6 +2,7 @@ const httpError = require('../shared/httpError');
 const Exercise = require('../model/exercise');
 const Category = require('../model/category');
 const { Op } = require("sequelize");
+const exercise = require('../model/exercise');
 
 
 exports.postCreate = (req , res , next) =>{
@@ -38,10 +39,22 @@ exports.postCreate = (req , res , next) =>{
 };
 
 exports.postDelete = (req , res , next) =>{
-    const {exerciseId} = req.body;
-    Exercise.destroy({where :{
-        id:exerciseId
+    const {id} = req.body;
+    Exercise.findOne({where :{
+        id:id,
+        flag:1
     }})
+    .then(exercise=>{
+        console.log('exxxxxerrr', exercise);
+        if(!exercise){
+            return next(new httpError('not found exercise...' , 404));
+        }
+        else {
+            // console.log('exercise id db', exercise.id);
+            exercise.flag=0
+            return exercise.save();
+        }
+    })
     .then(()=>{
         res.status(200).json({message:'Deleting is done...'})
     })
@@ -112,7 +125,10 @@ exports.postUpdate = (req , res , next) =>{
 exports.postList = (req , res , next) =>{
 
     Exercise.findAll({
-        attributes:[ 'name' , 'description' , 'icon' ],
+        where:{
+            flag:1
+        },
+        // attributes:[ 'name' , 'description' , 'icon' ],
         include : [
             {
                 model:Category,

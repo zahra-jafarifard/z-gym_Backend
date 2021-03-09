@@ -1,5 +1,6 @@
 const httpError = require('../shared/httpError');
 const Equipment = require('../model/equipment');
+const equipment = require('../model/equipment');
 
 exports.postCreate = (req , res , next) =>{
     const {equipmentName} = req.body;
@@ -28,15 +29,27 @@ exports.postCreate = (req , res , next) =>{
 };
 
 exports.postDelete = (req , res , next) =>{
-    const {equipmentId} = req.body;
-    Equipment.destroy({where :{
-        id:equipmentId
+    const {id} = req.body;
+    Equipment.findOne({where :{
+        id:id,
+        flag:1
     }})
+    .then(equipment=>{
+        // console.log('eeeequuiipment', equipment);
+        if(!equipment){
+            return next(new httpError('not found equipment...' , 404));
+        }
+        else {
+            // console.log('equipment id db', equipment.id);
+            equipment.flag=0;
+            return equipment.save();
+        }
+    })
     .then(()=>{
         res.status(200).json({message:'Deleting is done...'})
     })
-    .catch(()=>{
-        next(new httpError('Deleting Failed' , 500))
+    .catch((e)=>{
+        next(new httpError(e , 500))
     })
 };
 
@@ -66,7 +79,10 @@ exports.postUpdate = (req , res , next) =>{
 exports.postList = (req , res , next) =>{
 
     Equipment.findAll({
-        attributes:['equipment_name']
+        where:{
+            flag:1
+        },
+        // attributes:['equipment_name']
     })
     .then(equipment =>{
         res.status(200).json({equipment:equipment})

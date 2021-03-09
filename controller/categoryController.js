@@ -28,15 +28,28 @@ exports.postCreate = (req , res , next) =>{
 };
 
 exports.postDelete = (req , res , next) =>{
-    const {categoryId} = req.body;
-    Category.destroy({where :{
-        id:categoryId
+    const {id} = req.body;
+    console.log('caaat id', id);
+    Category.findOne({where :{
+        id:id,
+        flag:1
     }})
+    .then(cat=>{
+        console.log('caaaaaaat', cat);
+        if(!cat){
+            return next(new httpError('not found category...' , 404));
+        }
+        else {
+            // console.log('cat id db', cat.id);
+            cat.flag=0
+            return cat.save();
+        }
+    })
     .then(()=>{
         res.status(200).json({message:'Deleting is done...'})
     })
-    .catch(()=>{
-        next(new httpError('Deleting Failed' , 500))
+    .catch((e)=>{
+        next(new httpError(e , 500))
     })
 };
 
@@ -66,6 +79,9 @@ exports.postUpdate = (req , res , next) =>{
 exports.postList = (req , res , next) =>{
 
     Category.findAll({
+        where:{
+            flag:1
+        }
         // attributes:['category_name']
     })
     .then(categories =>{
