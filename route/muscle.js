@@ -1,8 +1,8 @@
-const express = require('express');
+const express = require("express");
 const router = express.Router();
 
-const authCheck = require('../shared/authCheck');
-const muscleController = require('../controller/muscleController');
+const authCheck = require("../shared/authCheck");
+const muscleController = require("../controller/muscleController");
 
 /**
  * @swagger
@@ -20,7 +20,7 @@ const muscleController = require('../controller/muscleController');
  *                 type: string
  *                 description: The muscle's name.
  *                 example: سینه
- *               
+ *
  *     responses:
  *       200:
  *         description: Created
@@ -31,9 +31,9 @@ const muscleController = require('../controller/muscleController');
  *               properties:
  *                 message:
  *                   type: string
- *                   
-*/
-router.post('/create' ,  muscleController.postCreate);
+ *
+ */
+router.post("/create", muscleController.postCreate);
 /**
  * @swagger
  * /muscle/delete:
@@ -60,9 +60,9 @@ router.post('/create' ,  muscleController.postCreate);
  *               properties:
  *                 message:
  *                   type: string
- *                   
-*/
-router.post('/delete' ,  muscleController.postDelete);
+ *
+ */
+router.post("/delete", muscleController.postDelete);
 /**
  * @swagger
  * /muscle/update:
@@ -83,7 +83,7 @@ router.post('/delete' ,  muscleController.postDelete);
  *                 type: string
  *                 description: The muscle's name.
  *                 example: شکم
- * 
+ *
  *     responses:
  *       200:
  *         description: Update
@@ -94,9 +94,9 @@ router.post('/delete' ,  muscleController.postDelete);
  *               properties:
  *                 message:
  *                   type: string
- *                   
-*/
-router.post('/update' ,  muscleController.postUpdate);
+ *
+ */
+router.post("/update", muscleController.postUpdate);
 /**
  * @swagger
  * /muscle/list:
@@ -117,8 +117,8 @@ router.post('/update' ,  muscleController.postUpdate);
  *                       type: string
  *                       description: The Muscle's name.
  *                       example: شکم
-*/
-router.post('/list' ,  muscleController.postList);
+ */
+router.post("/list", muscleController.postList);
 /**
  * @swagger
 /**
@@ -159,8 +159,6 @@ router.post('/list' ,  muscleController.postList);
  * 
  * 
 */
-router.post('/search' ,  muscleController.postSearch)
+router.post("/search", muscleController.postSearch);
 
-
-
-module.exports=router;
+module.exports = router;

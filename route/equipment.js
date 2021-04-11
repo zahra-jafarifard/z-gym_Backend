@@ -1,8 +1,8 @@
-const express = require('express');
+const express = require("express");
 const router = express.Router();
 
-const authCheck = require('../shared/authCheck');
-const equipmentController = require('../controller/equipmentController');
+const authCheck = require("../shared/authCheck");
+const equipmentController = require("../controller/equipmentController");
 /**
  * @swagger
  * /equipment/create:
@@ -18,8 +18,8 @@ const equipmentController = require('../controller/equipmentController');
  *               properties:
  *                 message:
  *                   type: string
-*/
-router.post('/create' , equipmentController.postCreate);
+ */
+router.post("/create", equipmentController.postCreate);
 /**
  * @swagger
  * /equipment/delete:
@@ -35,8 +35,8 @@ router.post('/create' , equipmentController.postCreate);
  *               properties:
  *                 message:
  *                   type: string
-*/
-router.post('/delete' ,  equipmentController.postDelete);
+ */
+router.post("/delete", equipmentController.postDelete);
 /**
  * @swagger
  * /equipment/update:
@@ -52,8 +52,8 @@ router.post('/delete' ,  equipmentController.postDelete);
  *               properties:
  *                 message:
  *                   type: string
-*/
-router.post('/update' ,  equipmentController.postUpdate);
+ */
+router.post("/update", equipmentController.postUpdate);
 /**
  * @swagger
  * /equipment/list:
@@ -76,11 +76,11 @@ router.post('/update' ,  equipmentController.postUpdate);
  *                         type: string
  *                         description: The equipment's name.
  *                         example: دمبل
-*/
-router.post('/list' ,  equipmentController.postList);
+ */
+router.post("/list", equipmentController.postList);
 /**
  * @swagger
-* /equipment/search:
+ * /equipment/search:
  *   post:
  *     summary: Do Search on equipment table
  *     responses:
@@ -100,8 +100,7 @@ router.post('/list' ,  equipmentController.postList);
  *                         type: string
  *                         description: The equipment's name.
  *                         example: دمبل
-*/
-router.post('/search' ,  equipmentController.postSearch)
+ */
+router.post("/search", equipmentController.postSearch);
 
-
-module.exports=router;
+module.exports = router;

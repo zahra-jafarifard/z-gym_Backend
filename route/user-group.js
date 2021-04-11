@@ -1,8 +1,8 @@
-const express = require('express');
+const express = require("express");
 const router = express.Router();
 
-const authCheck = require('../shared/authCheck');
-const groupController = require('../controller/groupController');
+const authCheck = require("../shared/authCheck");
+const groupController = require("../controller/groupController");
 
 /**
  * @swagger
@@ -24,7 +24,7 @@ const groupController = require('../controller/groupController');
  *                 type: string
  *                 description: The user_group's name.
  *                 example: 1
- *               
+ *
  *     responses:
  *       200:
  *         description: Created
@@ -35,9 +35,9 @@ const groupController = require('../controller/groupController');
  *               properties:
  *                 message:
  *                   type: string
- *                   
-*/
-router.post('/create'  , groupController.postCreate);
+ *
+ */
+router.post("/create", groupController.postCreate);
 /**
  * @swagger
  * /user_group/delete:
@@ -64,9 +64,9 @@ router.post('/create'  , groupController.postCreate);
  *               properties:
  *                 message:
  *                   type: string
- *                   
-*/
-router.post('/delete'  , groupController.postDelete);
+ *
+ */
+router.post("/delete", groupController.postDelete);
 /**
  * @swagger
  * /user_group/update:
@@ -91,7 +91,7 @@ router.post('/delete'  , groupController.postDelete);
  *                 type: string
  *                 description: The user_group's name.
  *                 example: 0
- * 
+ *
  *     responses:
  *       200:
  *         description: Update
@@ -102,9 +102,9 @@ router.post('/delete'  , groupController.postDelete);
  *               properties:
  *                 message:
  *                   type: string
- *                   
-*/
-router.post('/update'  , groupController.postUpdate);
+ *
+ */
+router.post("/update", groupController.postUpdate);
 /**
  * @swagger
  * /user_group/list:
@@ -133,8 +133,8 @@ router.post('/update'  , groupController.postUpdate);
  *                       type: string
  *                       description: The user_group's status.
  *                       example: 0
-*/
-router.post('/list'  , groupController.postList);
+ */
+router.post("/list", groupController.postList);
 /**
  * @swagger
 /**
@@ -183,7 +183,6 @@ router.post('/list'  , groupController.postList);
  * 
  * 
 */
-router.post('/search'  , groupController.postSearch)
+router.post("/search", groupController.postSearch);
 
-
-module.exports=router;
+module.exports = router;

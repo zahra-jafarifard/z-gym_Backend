@@ -1,9 +1,9 @@
-const express = require('express');
+const express = require("express");
 const router = express.Router();
 
-const authCheck = require('../shared/authCheck');
-const exerciseController = require('../controller/exerciseController');
-const fileUpload = require('../shared/fileUpload');
+const authCheck = require("../shared/authCheck");
+const exerciseController = require("../controller/exerciseController");
+const fileUpload = require("../shared/fileUpload");
 
 /**
  * @swagger
@@ -24,7 +24,7 @@ const fileUpload = require('../shared/fileUpload');
  *               description:
  *                 type: string
  *                 description: The exercise's description.
- *                 example: برای بزرگ کردن باسن 
+ *                 example: برای بزرگ کردن باسن
  *               icon:
  *                 type: string
  *                 description: The exercise's icon.
@@ -43,9 +43,13 @@ const fileUpload = require('../shared/fileUpload');
  *               properties:
  *                 message:
  *                   type: string
- *                   
-*/
-router.post('/create' , fileUpload.single('image') ,  exerciseController.postCreate);
+ *
+ */
+router.post(
+  "/create",
+  fileUpload.single("image"),
+  exerciseController.postCreate
+);
 /**
  * @swagger
  * /exercise/delete:
@@ -72,9 +76,9 @@ router.post('/create' , fileUpload.single('image') ,  exerciseController.postCre
  *               properties:
  *                 message:
  *                   type: string
- *                   
-*/
-router.post('/delete' ,  exerciseController.postDelete);
+ *
+ */
+router.post("/delete", exerciseController.postDelete);
 /**
  * @swagger
  * /exercise/update:
@@ -103,7 +107,7 @@ router.post('/delete' ,  exerciseController.postDelete);
  *                 type: string
  *                 description: The exercise's category.
  *                 example: ران
- * 
+ *
  *     responses:
  *       200:
  *         description: Update
@@ -114,9 +118,13 @@ router.post('/delete' ,  exerciseController.postDelete);
  *               properties:
  *                 message:
  *                   type: string
- *                   
-*/
-router.post('/update' , fileUpload.single('image') ,  exerciseController.postUpdate);
+ *
+ */
+router.post(
+  "/update",
+  fileUpload.single("image"),
+  exerciseController.postUpdate
+);
 /**
  * @swagger
  * /users:
@@ -141,8 +149,8 @@ router.post('/update' , fileUpload.single('image') ,  exerciseController.postUpd
  *                       type: string
  *                       description: The user's name.
  *                       example: Leanne Graham
-*/
-router.post('/list' ,  exerciseController.postList);
+ */
+router.post("/list", exerciseController.postList);
 /**
  * @swagger
  * /exercise/search:
@@ -162,7 +170,7 @@ router.post('/list' ,  exerciseController.postList);
  *               description:
  *                 type: string
  *                 description: The exercise's description.
- *                 example: برای بزرگ کردن باسن 
+ *                 example: برای بزرگ کردن باسن
  *               icon:
  *                 type: string
  *                 description: The exercise's icon.
@@ -191,16 +199,14 @@ router.post('/list' ,  exerciseController.postList);
  *                       descriptipn:
  *                         type: integer
  *                         description: The user ID.
- *                         example: برای بزرگ کردن باسن 
+ *                         example: برای بزرگ کردن باسن
  *                       icon:
  *                         type: integer
  *                         description: The user ID.
  *                         example: null
- * 
- * 
-*/
-router.post('/search'  , exerciseController.postSearch)
+ *
+ *
+ */
+router.post("/search", exerciseController.postSearch);
 
-
-
-module.exports=router;
+module.exports = router;

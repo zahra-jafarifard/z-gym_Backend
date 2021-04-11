@@ -48,7 +48,8 @@ const swaggerSpec = swaggerJSDoc(options);
 
 app.use('/upload' , express.static(path.join('upload')));
 
-app.use(hemlet()); //set proper http headers with helmet-- add 12 security headers to app
+//set proper http headers with helmet --> add 12 security headers to app
+app.use(hemlet()); 
 
 //Limit the rate of requests to prevent DoS attacks 
 const limiter = new RateLimit({

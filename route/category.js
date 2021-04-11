@@ -1,8 +1,8 @@
-const express = require('express');
+const express = require("express");
 const router = express.Router();
 
 // const authCheck = require('../shared/authCheck');
-const categoryController = require('../controller/categoryController');
+const categoryController = require("../controller/categoryController");
 /**
  * @swagger
  * /category/created:
@@ -19,7 +19,7 @@ const categoryController = require('../controller/categoryController');
  *                 type: string
  *                 description: The category's name.
  *                 example: سینه
- *               
+ *
  *     responses:
  *       200:
  *         description: Created
@@ -30,10 +30,10 @@ const categoryController = require('../controller/categoryController');
  *               properties:
  *                 message:
  *                   type: string
- *                   
-*/
+ *
+ */
 
-router.post('/create' ,  categoryController.postCreate);
+router.post("/create", categoryController.postCreate);
 /**
  * @swagger
  * /category/delete:
@@ -60,9 +60,9 @@ router.post('/create' ,  categoryController.postCreate);
  *               properties:
  *                 message:
  *                   type: string
- *                   
-*/
-router.post('/delete' ,  categoryController.postDelete);
+ *
+ */
+router.post("/delete", categoryController.postDelete);
 /**
  * @swagger
  * /category/update:
@@ -83,7 +83,7 @@ router.post('/delete' ,  categoryController.postDelete);
  *                 type: string
  *                 description: The category's name.
  *                 example: شکم
- * 
+ *
  *     responses:
  *       200:
  *         description: Update
@@ -94,9 +94,9 @@ router.post('/delete' ,  categoryController.postDelete);
  *               properties:
  *                 message:
  *                   type: string
- *                   
-*/
-router.post('/update' ,  categoryController.postUpdate);
+ *
+ */
+router.post("/update", categoryController.postUpdate);
 /**
  * @swagger
  * /category/list:
@@ -117,12 +117,12 @@ router.post('/update' ,  categoryController.postUpdate);
  *                         type: string
  *                         description: The category's name.
  *                         example:  شکم
- *                       
- * 
- * 
- * 
+ *
+ *
+ *
+ *
  */
-router.post('/list' , categoryController.postList)
+router.post("/list", categoryController.postList);
 /**
  * @swagger
 /**
@@ -163,7 +163,6 @@ router.post('/list' , categoryController.postList)
  * 
  * 
 */
-router.post('/search'  , categoryController.postSearch)
+router.post("/search", categoryController.postSearch);
 
-
-module.exports=router;
+module.exports = router;

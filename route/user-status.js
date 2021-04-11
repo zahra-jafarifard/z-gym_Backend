@@ -1,8 +1,8 @@
-const express = require('express');
+const express = require("express");
 const router = express.Router();
 
-const authCheck = require('../shared/authCheck');
-const statusController = require('../controller/statusController');
+const authCheck = require("../shared/authCheck");
+const statusController = require("../controller/statusController");
 
 /**
  * @swagger
@@ -20,8 +20,8 @@ const statusController = require('../controller/statusController');
  *                 type: string
  *                 description: The user_status's name.
  *                 example: فعال
- *              
- *               
+ *
+ *
  *     responses:
  *       200:
  *         description: Created
@@ -32,9 +32,9 @@ const statusController = require('../controller/statusController');
  *               properties:
  *                 message:
  *                   type: string
- *                   
-*/
-router.post('/create'  , statusController.postCreate);
+ *
+ */
+router.post("/create", statusController.postCreate);
 /**
  * @swagger
  * /user_status/delete:
@@ -61,9 +61,9 @@ router.post('/create'  , statusController.postCreate);
  *               properties:
  *                 message:
  *                   type: string
- *                   
-*/
-router.post('/delete'  , statusController.postDelete);
+ *
+ */
+router.post("/delete", statusController.postDelete);
 /**
  * @swagger
  * /user_status/update:
@@ -84,8 +84,8 @@ router.post('/delete'  , statusController.postDelete);
  *                 type: string
  *                 description: The user_status's name.
  *                 example: فعال
- *               
- * 
+ *
+ *
  *     responses:
  *       200:
  *         description: Update
@@ -96,9 +96,9 @@ router.post('/delete'  , statusController.postDelete);
  *               properties:
  *                 message:
  *                   type: string
- *                   
-*/
-router.post('/update'  , statusController.postUpdate);
+ *
+ */
+router.post("/update", statusController.postUpdate);
 /**
  * @swagger
  * /user_status/list:
@@ -123,9 +123,9 @@ router.post('/update'  , statusController.postUpdate);
  *                       type: string
  *                       description: The user_status's name.
  *                       example: فعال
- *                     
-*/
-router.post('/list'  , statusController.postList)
+ *
+ */
+router.post("/list", statusController.postList);
 /**
  * @swagger
  * /user_status/search:
@@ -142,8 +142,8 @@ router.post('/list'  , statusController.postList)
  *                 type: string
  *                 description: The user_status's name.
  *                 example: فعال
- *               
- *             
+ *
+ *
  *     responses:
  *       200:
  *         description: Search
@@ -161,12 +161,11 @@ router.post('/list'  , statusController.postList)
  *                         type: string
  *                         description: The status's name.
  *                         example: فعال
- *                       
- *                       
- * 
- * 
-*/
-router.post('/search'  , statusController.postSearch)
+ *
+ *
+ *
+ *
+ */
+router.post("/search", statusController.postSearch);
 
-
-module.exports=router;
+module.exports = router;
