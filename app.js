@@ -1,5 +1,7 @@
 const express = require('express');
 const app = express();
+const hemlet = require('helmet');
+const RateLimit = require('express-rate-limit');
 const bodyParser = require('body-parser');
 require('dotenv').config();
 const path = require('path');
@@ -46,6 +48,14 @@ const swaggerSpec = swaggerJSDoc(options);
 
 app.use('/upload' , express.static(path.join('upload')));
 
+app.use(hemlet()); //set proper http headers with helmet-- add 12 security headers to app
+
+//Limit the rate of requests to prevent DoS attacks 
+const limiter = new RateLimit({
+  windowMs : 15*60*1000,
+  max:10000,
+  delayMs:0
+})
 app.use('/GymRestAPIs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 app.use((req,res,next) =>{
   res.setHeader('Access-Control-Allow-Origin' , '*');
