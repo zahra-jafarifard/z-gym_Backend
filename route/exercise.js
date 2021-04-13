@@ -47,6 +47,7 @@ const fileUpload = require("../shared/fileUpload");
  */
 router.post(
   "/create",
+  authCheck,
   fileUpload.single("image"),
   exerciseController.postCreate
 );
@@ -78,7 +79,7 @@ router.post(
  *                   type: string
  *
  */
-router.post("/delete", exerciseController.postDelete);
+router.post("/delete", authCheck, exerciseController.postDelete);
 /**
  * @swagger
  * /exercise/update:
@@ -122,6 +123,7 @@ router.post("/delete", exerciseController.postDelete);
  */
 router.post(
   "/update",
+  authCheck,
   fileUpload.single("image"),
   exerciseController.postUpdate
 );
@@ -150,7 +152,7 @@ router.post(
  *                       description: The user's name.
  *                       example: Leanne Graham
  */
-router.post("/list", exerciseController.postList);
+router.post("/list", authCheck, exerciseController.postList);
 /**
  * @swagger
  * /exercise/search:
@@ -207,6 +209,6 @@ router.post("/list", exerciseController.postList);
  *
  *
  */
-router.post("/search", exerciseController.postSearch);
+router.post("/search", authCheck, exerciseController.postSearch);
 
 module.exports = router;

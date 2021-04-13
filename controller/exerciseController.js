@@ -9,7 +9,7 @@ exports.postCreate = (req, res, next) => {
   if (!req.file) {
     return next(new HttpError("no file in req.file...", 422));
   }
-  // console.log('bodddy' , req.body)
+  console.log('bodddy' , req.body)
   // if (!name || !description || !icon || !category ){
   //     throw(new httpError('Field(s) Is Empty...' , 422));
   // }

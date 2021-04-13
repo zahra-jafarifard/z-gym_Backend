@@ -37,7 +37,7 @@ const groupController = require("../controller/groupController");
  *                   type: string
  *
  */
-router.post("/create", groupController.postCreate);
+router.post("/create", authCheck, groupController.postCreate);
 /**
  * @swagger
  * /user_group/delete:
@@ -66,7 +66,7 @@ router.post("/create", groupController.postCreate);
  *                   type: string
  *
  */
-router.post("/delete", groupController.postDelete);
+router.post("/delete", authCheck, groupController.postDelete);
 /**
  * @swagger
  * /user_group/update:
@@ -104,7 +104,7 @@ router.post("/delete", groupController.postDelete);
  *                   type: string
  *
  */
-router.post("/update", groupController.postUpdate);
+router.post("/update", authCheck, groupController.postUpdate);
 /**
  * @swagger
  * /user_group/list:
@@ -134,7 +134,7 @@ router.post("/update", groupController.postUpdate);
  *                       description: The user_group's status.
  *                       example: 0
  */
-router.post("/list", groupController.postList);
+router.post("/list", authCheck, groupController.postList);
 /**
  * @swagger
 /**
@@ -183,6 +183,6 @@ router.post("/list", groupController.postList);
  * 
  * 
 */
-router.post("/search", groupController.postSearch);
+router.post("/search", authCheck, groupController.postSearch);
 
 module.exports = router;

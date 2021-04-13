@@ -54,7 +54,6 @@ exports.postRegister = (req, res, next) => {
           }
         })
         .then((createdUser) => {
-          // console.log('createdUUUser' , createdUser)
           return res.status(201).json({ user: createdUser });
         });
     })
@@ -149,11 +148,10 @@ exports.postResetPassword = (req, res, next) => {
 };
 
 exports.postSetNewPassword = (req, res, next) => {
-  console.log("sssssssssssssssssssssssssssss");
   const token = req.params.resetToken;
   const randomNumber = req.body.randomNumber;
   const newPassword = req.body.newPassword;
-  console.log("set nreewww paaas", token, newPassword, randomNumber);
+//   console.log("set nreewww paaas", token, newPassword, randomNumber);
   let updatedUser;
   User.findOne({
     where: {
@@ -219,6 +217,46 @@ exports.postFetchMembers = (req, res, next) => {
       });
 
       res.json({ members: mem });
+    })
+    .catch((e) => {
+      next(new httpError(e.message, 500));
+    });
+};
+exports.postFetchMember = (req, res, next) => {
+  console.log('parrrramid',req.params.id)
+  const id= req.params.id;
+  return User.findOne({
+    where: {
+      flag: 1,
+      id:id
+    },
+    attributes: [
+      "id",
+      "name",
+      "lastName",
+      "mobile",
+      "gender",
+      "birthDay",
+      "height",
+      "weight",
+    ],
+    include: [
+      {
+        model: userGroup,
+
+        attributes: ["group_name"],
+      },
+      {
+        model: userStatus,
+
+        attributes: ["status_name"],
+      },
+    ],
+  })
+    .then((member) => {
+    //  console.log('mmmmeeeem' , member.dataValues)
+
+      res.json({ user: member.dataValues });
     })
     .catch((e) => {
       next(new httpError(e.message, 500));

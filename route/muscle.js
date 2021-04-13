@@ -33,7 +33,7 @@ const muscleController = require("../controller/muscleController");
  *                   type: string
  *
  */
-router.post("/create", muscleController.postCreate);
+router.post("/create", authCheck, muscleController.postCreate);
 /**
  * @swagger
  * /muscle/delete:
@@ -62,7 +62,7 @@ router.post("/create", muscleController.postCreate);
  *                   type: string
  *
  */
-router.post("/delete", muscleController.postDelete);
+router.post("/delete", authCheck, muscleController.postDelete);
 /**
  * @swagger
  * /muscle/update:
@@ -96,7 +96,7 @@ router.post("/delete", muscleController.postDelete);
  *                   type: string
  *
  */
-router.post("/update", muscleController.postUpdate);
+router.post("/update", authCheck, muscleController.postUpdate);
 /**
  * @swagger
  * /muscle/list:
@@ -118,7 +118,7 @@ router.post("/update", muscleController.postUpdate);
  *                       description: The Muscle's name.
  *                       example: شکم
  */
-router.post("/list", muscleController.postList);
+router.post("/list", authCheck, muscleController.postList);
 /**
  * @swagger
 /**
@@ -159,6 +159,6 @@ router.post("/list", muscleController.postList);
  * 
  * 
 */
-router.post("/search", muscleController.postSearch);
+router.post("/search", authCheck, muscleController.postSearch);
 
 module.exports = router;

@@ -34,7 +34,7 @@ const statusController = require("../controller/statusController");
  *                   type: string
  *
  */
-router.post("/create", statusController.postCreate);
+router.post("/create", authCheck, statusController.postCreate);
 /**
  * @swagger
  * /user_status/delete:
@@ -63,7 +63,7 @@ router.post("/create", statusController.postCreate);
  *                   type: string
  *
  */
-router.post("/delete", statusController.postDelete);
+router.post("/delete", authCheck, statusController.postDelete);
 /**
  * @swagger
  * /user_status/update:
@@ -98,7 +98,7 @@ router.post("/delete", statusController.postDelete);
  *                   type: string
  *
  */
-router.post("/update", statusController.postUpdate);
+router.post("/update", authCheck, statusController.postUpdate);
 /**
  * @swagger
  * /user_status/list:
@@ -125,7 +125,7 @@ router.post("/update", statusController.postUpdate);
  *                       example: فعال
  *
  */
-router.post("/list", statusController.postList);
+router.post("/list", authCheck, statusController.postList);
 /**
  * @swagger
  * /user_status/search:
@@ -166,6 +166,6 @@ router.post("/list", statusController.postList);
  *
  *
  */
-router.post("/search", statusController.postSearch);
+router.post("/search", authCheck, statusController.postSearch);
 
 module.exports = router;

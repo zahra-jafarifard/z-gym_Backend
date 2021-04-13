@@ -19,7 +19,7 @@ const equipmentController = require("../controller/equipmentController");
  *                 message:
  *                   type: string
  */
-router.post("/create", equipmentController.postCreate);
+router.post("/create", authCheck, equipmentController.postCreate);
 /**
  * @swagger
  * /equipment/delete:
@@ -36,7 +36,7 @@ router.post("/create", equipmentController.postCreate);
  *                 message:
  *                   type: string
  */
-router.post("/delete", equipmentController.postDelete);
+router.post("/delete", authCheck, equipmentController.postDelete);
 /**
  * @swagger
  * /equipment/update:
@@ -53,7 +53,7 @@ router.post("/delete", equipmentController.postDelete);
  *                 message:
  *                   type: string
  */
-router.post("/update", equipmentController.postUpdate);
+router.post("/update", authCheck, equipmentController.postUpdate);
 /**
  * @swagger
  * /equipment/list:
@@ -77,7 +77,7 @@ router.post("/update", equipmentController.postUpdate);
  *                         description: The equipment's name.
  *                         example: دمبل
  */
-router.post("/list", equipmentController.postList);
+router.post("/list", authCheck, equipmentController.postList);
 /**
  * @swagger
  * /equipment/search:
@@ -101,6 +101,6 @@ router.post("/list", equipmentController.postList);
  *                         description: The equipment's name.
  *                         example: دمبل
  */
-router.post("/search", equipmentController.postSearch);
+router.post("/search", authCheck, equipmentController.postSearch);
 
 module.exports = router;

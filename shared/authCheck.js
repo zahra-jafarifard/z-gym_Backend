@@ -6,21 +6,24 @@ module.exports = (req, res, next) => {
     return next();
   }
   try {
-    let token = req.header("authorization").split(" ")[1];
-    console.log(token);
+    let decodedToken;
+    let token = req.header("Authorization").split(" ")[1];
+    console.log('ttttt' , token);
     if (!token) {
       throw new httpError("Authentication failed...", 401);
     }
-    jwt
-      .verify(token, "mySecretKey")
-      .then((decoded) => {
-        req.userId = decoded.userId;
-        req.userMobile = decoded.mobile;
-        console.log("in authcheck file ::::", req.userId, req.userMobile);
-      })
-      .catch((e) => {
-        next(new httpError(e, 500));
-      });
+    try {
+      decodedToken = jwt.verify(token, "mySecretKey");
+    } catch (err) {
+      throw new httpError(err, 500);
+    }
+
+    if (!decodedToken) {
+      throw new httpError("not authenticated", 401);
+    }
+
+    req.userId = decodedToken.userId;
+    req.userMobile = decodedToken.mobile;
 
     next();
   } catch (err) {
