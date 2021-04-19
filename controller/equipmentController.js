@@ -1,8 +1,15 @@
 const httpError = require("../shared/httpError");
 const Equipment = require("../model/equipment");
 const equipment = require("../model/equipment");
+const { validationResult } = require("express-validator/check");
 
 exports.postCreate = (req, res, next) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res
+      .status(422)
+      .json({ message: "validation failed", error: errors.array() });
+  }
   const { equipmentName } = req.body;
   if (!equipmentName) {
     throw new httpError("equipmentName Field Is Empty...", 422);
@@ -61,19 +68,30 @@ exports.postDelete = (req, res, next) => {
 };
 
 exports.postUpdate = (req, res, next) => {
-  const id = +req.body.id + 1;
+  // console.log('reee ' , req.body)
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res
+      .status(422)
+      .json({ message: "validation failed", error: errors.array() });
+  }
+  const id = +req.body.id ;
   const name = req.body.name;
 
   Equipment.findOne({
     where: {
+      flag:1,
       id: id,
     },
   })
     .then((eqpt) => {
+  console.log('eqpt ' , eqpt)
+
       if (!eqpt) {
         return next(new HttpError("there is not this equipment...", 404));
       }
       eqpt.equipment_name = name;
+      eqpt.flag=1;
       return eqpt.save();
     })
     .then(() => {

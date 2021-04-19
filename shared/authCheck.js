@@ -8,7 +8,7 @@ module.exports = (req, res, next) => {
   try {
     let decodedToken;
     let token = req.header("Authorization").split(" ")[1];
-    console.log('ttttt' , token);
+    console.log("ttttt", token);
     if (!token) {
       throw new httpError("Authentication failed...", 401);
     }

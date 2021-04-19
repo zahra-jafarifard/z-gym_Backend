@@ -1,5 +1,6 @@
 const express = require("express");
 const router = express.Router();
+const { check , body } = require("express-validator");
 
 const authCheck = require("../shared/authCheck");
 const categoryController = require("../controller/categoryController");
@@ -33,7 +34,12 @@ const categoryController = require("../controller/categoryController");
  *
  */
 
-router.post("/create", authCheck, categoryController.postCreate);
+router.post("/create", 
+[
+    body('categoryName').isString().trim().isLength({min:2})
+  .withMessage('Please Insert Valid Category Name'),
+]
+,authCheck, categoryController.postCreate);
 /**
  * @swagger
  * /category/delete:
@@ -96,7 +102,12 @@ router.post("/delete", authCheck, categoryController.postDelete);
  *                   type: string
  *
  */
-router.post("/update", authCheck, categoryController.postUpdate);
+router.post("/update",
+[
+    body('name').isString().trim().isLength({min:2})
+  .withMessage('Please Insert Valid Category Name'),
+]
+, authCheck, categoryController.postUpdate);
 /**
  * @swagger
  * /category/list:

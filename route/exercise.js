@@ -1,10 +1,10 @@
 const express = require("express");
 const router = express.Router();
+const { check, body } = require("express-validator");
 
 const authCheck = require("../shared/authCheck");
 const exerciseController = require("../controller/exerciseController");
 const fileUpload = require("../shared/fileUpload");
-
 /**
  * @swagger
  * /exercise/created:
@@ -47,6 +47,25 @@ const fileUpload = require("../shared/fileUpload");
  */
 router.post(
   "/create",
+  // [
+  //   body("name")
+  //     .isString()
+  //     .trim()
+  //     .isLength({ min: 2 })
+  //     .withMessage("Please Insert Valid Exercise Name"),
+
+  //   body("description")
+  //     .isString()
+  //     .trim()
+  //     .isLength({ min: 5 })
+  //     .withMessage("Please Insert Valid Description"),
+
+  //   body("category")
+  //     .isString()
+  //     .trim()
+  //     .isLength({ min: 2 })
+  //     .withMessage("Please Insert Valid Category Name"),
+  // ],
   authCheck,
   fileUpload.single("image"),
   exerciseController.postCreate
@@ -123,6 +142,21 @@ router.post("/delete", authCheck, exerciseController.postDelete);
  */
 router.post(
   "/update",
+  // [
+  //   check("name")
+  //     .notEmpty()
+  //     .isLength({ min: 2 })
+  //     .withMessage("Please Insert Valid Exercise Name"),
+
+  //   check("description")
+  //     .notEmpty()
+  //     .isLength({ min: 5 })
+  //     .withMessage("Please Insert Valid Description"),
+
+  //   check("category")
+  //     .notEmpty()
+  //     .withMessage("Please Insert Valid Category Name"),
+  // ],
   authCheck,
   fileUpload.single("image"),
   exerciseController.postUpdate
@@ -209,6 +243,11 @@ router.post("/list", authCheck, exerciseController.postList);
  *
  *
  */
-router.post("/search", authCheck, exerciseController.postSearch);
+router.post(
+  "/search",
+  authCheck,
+  exerciseController.postSearch
+);
+router.post("/fetchForUpdate", authCheck, exerciseController.fetchForUpdate);
 
 module.exports = router;

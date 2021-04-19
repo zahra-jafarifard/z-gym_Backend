@@ -1,6 +1,7 @@
 const express = require("express");
 const router = express.Router();
-
+const { check, body } = require("express-validator");
+ 
 const authCheck = require("../shared/authCheck");
 const muscleController = require("../controller/muscleController");
 
@@ -33,7 +34,15 @@ const muscleController = require("../controller/muscleController");
  *                   type: string
  *
  */
-router.post("/create", authCheck, muscleController.postCreate);
+router.post("/create",
+[
+    body("muscleName")
+    .isString()
+    .trim()
+    .isLength({ min: 5 })
+    .withMessage("Please Insert Valid Muscle Name")
+]
+,authCheck, muscleController.postCreate);
 /**
  * @swagger
  * /muscle/delete:
@@ -96,7 +105,15 @@ router.post("/delete", authCheck, muscleController.postDelete);
  *                   type: string
  *
  */
-router.post("/update", authCheck, muscleController.postUpdate);
+router.post("/update",
+ [
+    body("name")
+    .isString()
+    .trim()
+    .isLength({ min: 5 })
+    .withMessage("Please Insert Valid Muscle Name")
+]
+,authCheck, muscleController.postUpdate);
 /**
  * @swagger
  * /muscle/list:

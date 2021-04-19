@@ -1,8 +1,15 @@
 const httpError = require("../shared/httpError");
 const Status = require("../model/user-status");
 const { Op } = require("sequelize");
+const { validationResult } = require("express-validator/check");
 
 exports.postCreate = (req, res, next) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res
+      .status(422)
+      .json({ message: "validation failed", error: errors.array() });
+  }
   const { statusName } = req.body;
   if (!statusName) {
     throw new httpError("statusName Field Is Empty...", 422);
@@ -61,6 +68,12 @@ exports.postDelete = (req, res, next) => {
 };
 
 exports.postUpdate = (req, res, next) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res
+      .status(422)
+      .json({ message: "validation failed", error: errors.array() });
+  }
   const id = +req.body.id + 1;
   const name = req.body.name;
 

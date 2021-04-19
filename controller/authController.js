@@ -2,6 +2,7 @@ const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const crypto = require("crypto");
 const { Op } = require("sequelize");
+const { validationResult } = require("express-validator/check");
 
 const httpError = require("../shared/httpError");
 const User = require("../model/user");
@@ -9,6 +10,12 @@ const userGroup = require("../model/user-group");
 const userStatus = require("../model/user-status");
 
 exports.postRegister = (req, res, next) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res
+      .status(422)
+      .json({ message: "validation failed", error: errors.array() });
+  }
   const {
     name,
     lastName,
@@ -20,13 +27,13 @@ exports.postRegister = (req, res, next) => {
     height,
     weight,
   } = req.body;
-  console.log(req.body);
+  // console.log(req.body);
   // if (!name || !lastName || !mobile || !password || !repaetPassword || !gender || !birthDay || !height || !weight){
   //     throw new httpError('unauthurized  user...' , 401);
   // }
-  // if(password != repaetPassword){
-  //     throw new httpError('password and repeat arent match...' , 401)
-  // }
+  if (password != repaetPassword) {
+    throw new httpError("password and repeat arent match...", 401);
+  }
   bcrypt
     .hash(password, 12)
     .then((hashPassword) => {
@@ -61,10 +68,18 @@ exports.postRegister = (req, res, next) => {
       next(new httpError(e, 500));
     });
 };
+
 exports.postLogin = (req, res, next) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    // console.log('errors.array()' , errors)
+    return res
+      .status(422)
+      .json({ message: "validation failed", error: errors.array() });
+  }
   const { mobile, password, rememberMe } = req.body;
   // console.log('reeeq',req.body);
-  // let token;
+  let token;
   if (!mobile || !password) {
     throw new httpError("unauthurized  user...", 401);
   }
@@ -72,52 +87,54 @@ exports.postLogin = (req, res, next) => {
     where: {
       mobile: mobile,
     },
-  })
-    .then((user) => {
-      if (!user) {
-        next(new httpError("Doesnt Exist such a User...", 404));
-      }
-      return bcrypt
-        .compare(password, user.password)
-        .then((matchPass) => {
-          if (!matchPass) {
-            next(new httpError("invalid password...", 401));
+  }).then((user) => {
+    if (!user) {
+      next(new httpError("Doesnt Exist such a User...", 422));
+      res.status(422).json({ error: "Doesnt Exist such a User..." });
+    }
+    return bcrypt
+      .compare(password, user.password)
+      .then((matchPass) => {
+        if (!matchPass) {
+          throw new httpError("invalid password...", 401);
+        } else {
+          if (rememberMe) {
+            token = jwt.sign(
+              { mobile: user.mobile, userId: user.id },
+              "mySecretKey",
+              { expiresIn: "2h" }
+            );
           } else {
-            if (rememberMe) {
-              token = jwt.sign(
-                { mobile: user.mobile, userId: user.id },
-                "mySecretKey",
-                { expiresIn: "2h" }
-              );
-            } else {
-              token = jwt.sign(
-                { mobile: user.mobile, userId: user.id },
-                "mySecretKey",
-                { expiresIn: "1h" }
-              );
-            }
-            user.token = token;
-            return user.save();
+            token = jwt.sign(
+              { mobile: user.mobile, userId: user.id },
+              "mySecretKey",
+              { expiresIn: "1h" }
+            );
           }
-        })
-        .then(() => {
-          console.log("usser:", user.dataValues.mobile);
-          console.log("tokkkken:", token);
-
-          res
-            .status(200)
-            .json({ userMobile: user.dataValues.mobile, token: token });
-        })
-        .catch((err) => {
-          next(new httpError(err, 500));
-        });
-    })
-    .catch(() => {
-      next(new httpError("Failed to Fetch User...", 500));
-    });
+          user.token = token;
+          return user.save().then(() => {
+            console.log("usser:", user.dataValues.mobile);
+            console.log("tokkkken:", token);
+            res
+              .status(200)
+              .json({ userMobile: user.dataValues.mobile, token: token });
+          });
+        }
+      })
+      .catch((err) => {
+        // next(new httpError(err, 500));
+        res.status(500).json({ error: err.message });
+      });
+  });
 };
 
-exports.postResetPassword = (req, res, next) => {
+exports.postForgetPassword = (req, res, next) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res
+      .status(422)
+      .json({ message: "validation failed", error: errors.array() });
+  }
   const { mobile } = req.body;
   console.log("mobile", mobile);
   const resetPassToken = crypto.randomBytes(32).toString("hex");
@@ -148,10 +165,16 @@ exports.postResetPassword = (req, res, next) => {
 };
 
 exports.postSetNewPassword = (req, res, next) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res
+      .status(422)
+      .json({ message: "validation failed", error: errors.array() });
+  }
   const token = req.params.resetToken;
   const randomNumber = req.body.randomNumber;
   const newPassword = req.body.newPassword;
-//   console.log("set nreewww paaas", token, newPassword, randomNumber);
+  console.log("set nreewww paaas", token, newPassword, randomNumber);
   let updatedUser;
   User.findOne({
     where: {
@@ -215,20 +238,20 @@ exports.postFetchMembers = (req, res, next) => {
       members.map((m) => {
         mem.push(m.dataValues);
       });
-
-      res.json({ members: mem });
+      // console.log('meeeeeem', mem)
+      return res.json({ members: mem });
     })
     .catch((e) => {
       next(new httpError(e.message, 500));
     });
 };
 exports.postFetchMember = (req, res, next) => {
-  console.log('parrrramid',req.params.id)
-  const id= req.params.id;
+  // console.log("parrrramid", req.params.id);
+  const id = req.params.id;
   return User.findOne({
     where: {
       flag: 1,
-      id:id
+      id: id,
     },
     attributes: [
       "id",
@@ -254,7 +277,7 @@ exports.postFetchMember = (req, res, next) => {
     ],
   })
     .then((member) => {
-    //  console.log('mmmmeeeem' , member.dataValues)
+      //  console.log('mmmmeeeem' , member.dataValues)
 
       res.json({ user: member.dataValues });
     })
@@ -321,6 +344,12 @@ exports.postSearchMembers = (req, res, next) => {
 };
 
 exports.postCreateMember = (req, res, next) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res
+      .status(422)
+      .json({ message: "validation failed", error: errors.array() });
+  }
   const {
     name,
     lastName,
@@ -333,19 +362,10 @@ exports.postCreateMember = (req, res, next) => {
     status,
     group,
   } = req.body;
-  console.log("boooooody", req.body);
+  // console.log("boooooody", req.body);
   // if (!name || !lastName || !mobile || !password || !gender || !birthDay || !height || !weight || !status || !group){
   //     throw(new httpError('unauthurized  user...' , 401));
   // }
-  // let stId='';
-
-  // userStatus.findOne({where:{
-  //     status_name:status
-  // }})
-  // .then(sId => {
-  //     stId=sId.id
-  // })
-  // .catch(e=>console.log(e))
 
   bcrypt
     .hash(password, 12)
@@ -355,33 +375,29 @@ exports.postCreateMember = (req, res, next) => {
         where: {
           mobile: mobile,
         },
-      })
-        .then((user) => {
-          if (!user) {
-            return User.create({
-              name,
-              lastName,
-              mobile,
-              password: hashPassword,
-              gender,
-              birthDay,
-              height,
-              weight,
-              userStatusId: status,
-              userGroupId: group,
-              flag: 1,
-            });
-          } else {
-            next(new httpError("User Already Exist...", 500));
-          }
-        })
-        .then((createdUser) => {
-          // console.log('createdUUUser' , createdUser)
-          return res.status(201).json({ user: createdUser });
-        })
-        .catch((e) => {
-          next(new httpError(e, 500));
-        });
+      }).then((user) => {
+        if (user) {
+          next(new httpError("User Already Exist...", 500));
+          res.status(500).json({ error: "User Already Exist..." });
+        } else {
+          return User.create({
+            name,
+            lastName,
+            mobile,
+            password: hashPassword,
+            gender,
+            birthDay,
+            height,
+            weight,
+            userStatusId: status,
+            userGroupId: group,
+            flag: 1,
+          }).then((createdUser) => {
+            // console.log('createdUUUser' , createdUser)
+            return res.status(201).json({ user: createdUser });
+          });
+        }
+      });
     })
     .catch((e) => {
       next(new httpError(e, 500));
@@ -391,6 +407,12 @@ exports.postCreateMember = (req, res, next) => {
 let grpId = "";
 let stId = "";
 exports.postUpdateMember = (req, res, next) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res
+      .status(422)
+      .json({ message: "validation failed", error: errors.array() });
+  }
   let {
     name,
     lastName,
@@ -402,7 +424,7 @@ exports.postUpdateMember = (req, res, next) => {
     gender,
     group,
   } = req.body;
-  console.log("boddddy", req.body);
+  // console.log("boddddy", req.body);
   userGroup
     .findOne({
       where: {

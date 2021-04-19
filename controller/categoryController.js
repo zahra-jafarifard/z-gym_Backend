@@ -1,7 +1,14 @@
 const httpError = require("../shared/httpError");
 const Category = require("../model/category");
+const { validationResult } = require("express-validator/check");
 
 exports.postCreate = (req, res, next) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res
+      .status(422)
+      .json({ message: "validation failed", error: errors.array() });
+  }
   const { categoryName } = req.body;
   if (!categoryName) {
     throw new httpError("categoryName Field Is Empty...", 422);
@@ -61,25 +68,35 @@ exports.postDelete = (req, res, next) => {
 };
 
 exports.postUpdate = (req, res, next) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res
+      .status(422)
+      .json({ message: "validation failed", error: errors.array() });
+  }
   const id = +req.body.id + 1;
   const name = req.body.name;
-
+console.log('namecaaat' , name)
   Category.findOne({
     where: {
+      flag:1,
       id: id,
+
     },
   })
     .then((cat) => {
+console.log('namecaaatdddd' , cat)
+
       if (!cat) {
         return next(new HttpError("there is not this category...", 404));
       }
       cat.category_name = name;
-      return cat.save();
-    })
-    .then(() => {
-      res
-        .status(200)
-        .json({ message: "category name updated successfully..." });
+      return cat.save()
+      .then(() => {
+        res
+          .status(200)
+          .json({ message: "category name updated successfully..." });
+      })
     })
     .catch(() => {
       next(new httpError("Faild in fetching for updating", 500));

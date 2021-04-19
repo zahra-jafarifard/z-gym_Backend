@@ -1,8 +1,16 @@
 const httpError = require("../shared/httpError");
 const Group = require("../model/user-group");
 const { Op } = require("sequelize");
+const { validationResult } = require("express-validator/check");
+
 
 exports.postCreate = (req, res, next) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res
+      .status(422)
+      .json({ message: "validation failed", error: errors.array() });
+  }
   const { groupName, groupSatus } = req.body;
   if (!groupName) {
     throw new httpError("groupName Field Is Empty...", 422);
@@ -61,19 +69,26 @@ exports.postDelete = (req, res, next) => {
 };
 
 exports.postUpdate = (req, res, next) => {
-  const id = +req.body.id + 1;
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res
+      .status(422)
+      .json({ message: "validation failed", error: errors.array() });
+  }
+  const id = +req.body.id ;
   const name = req.body.name;
   const status = req.body.status;
   console.log("reeeeq", req.body);
   Group.findOne({
     where: {
+      flag:1,
       id: id,
     },
   })
     .then((grp) => {
       console.log("gggg", grp);
       if (!grp) {
-        return next(new HttpError("there is not this group...", 404));
+        return next(new httpError("Doesnt Exist this group...", 404));
       }
       grp.group_name = name;
       grp.group_status = status;

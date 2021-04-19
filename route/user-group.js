@@ -1,5 +1,6 @@
 const express = require("express");
 const router = express.Router();
+const { check, body } = require("express-validator");
 
 const authCheck = require("../shared/authCheck");
 const groupController = require("../controller/groupController");
@@ -37,7 +38,23 @@ const groupController = require("../controller/groupController");
  *                   type: string
  *
  */
-router.post("/create", authCheck, groupController.postCreate);
+router.post(
+  "/create",
+  [
+    body("groupName")
+      .isString()
+      .trim()
+      .isLength({ min: 3 })
+      .withMessage("Please Insert Valid Group Name"),
+
+    body("groupSatus")
+      .isBoolean()
+      .trim()
+      .withMessage("Please Insert Valid Group Satus"),
+  ],
+  authCheck,
+  groupController.postCreate
+);
 /**
  * @swagger
  * /user_group/delete:
@@ -104,7 +121,23 @@ router.post("/delete", authCheck, groupController.postDelete);
  *                   type: string
  *
  */
-router.post("/update", authCheck, groupController.postUpdate);
+router.post(
+  "/update",
+  [
+    body("name")
+      .isString()
+      .trim()
+      .isLength({ min: 3 })
+      .withMessage("Please Insert Valid Group Name"),
+
+    // body('status')
+    // .isBoolean()
+    // .trim()
+    // .withMessage("Please Insert Valid Group Satus")
+  ],
+  authCheck,
+  groupController.postUpdate
+);
 /**
  * @swagger
  * /user_group/list:

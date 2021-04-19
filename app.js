@@ -1,10 +1,26 @@
 const express = require('express');
 const app = express();
 const hemlet = require('helmet');
+const path = require('path');
 const RateLimit = require('express-rate-limit');
 const bodyParser = require('body-parser');
+
+const User = require('./model/user');
+const Status = require('./model/user-status');
+const Group = require('./model/user-group');
+const Exercise = require('./model/exercise');
+const Category = require('./model/category');
+
+const httpError = require('./shared/httpError')
+const sequelize = require('./model/sequelize');
+const authRoute = require('./route/auth');
+const statusRoute = require('./route/user-status');
+const groupRoute = require('./route/user-group');
+const categoryRoute = require('./route/category');
+const equipmentRoute = require('./route/equipment');
+const muscleRoute = require('./route/muscle');
+const exerciseRoute = require('./route/exercise');
 require('dotenv').config();
-const path = require('path');
 
 app.use(bodyParser.json());
 
@@ -65,21 +81,6 @@ app.use((req,res,next) =>{
   next();
 })
 
-const User = require('./model/user');
-const Status = require('./model/user-status');
-const Group = require('./model/user-group');
-const Exercise = require('./model/exercise');
-const Category = require('./model/category');
-
-const httpError = require('./shared/httpError')
-const sequelize = require('./model/sequelize');
-const authRoute = require('./route/auth');
-const statusRoute = require('./route/user-status');
-const groupRoute = require('./route/user-group');
-const categoryRoute = require('./route/category');
-const equipmentRoute = require('./route/equipment');
-const muscleRoute = require('./route/muscle');
-const exerciseRoute = require('./route/exercise');
 
 app.use(authRoute);
 app.use('/user_status', statusRoute);
@@ -87,12 +88,18 @@ app.use('/user_group', groupRoute);
 app.use('/category', categoryRoute);
 app.use('/equipment', equipmentRoute);
 app.use('/muscle', muscleRoute);
-app.use('/exercise', exerciseRoute);
+app.use('/exercise' ,exerciseRoute);
 
 //handle 404 error
-app.use(() => {
+app.use((req,res,next) => {
+  console.log(req.get('host'));
     throw new httpError('Could not find this route.', 404);
 });
+// app.use((err , req ,res , next) => {
+//   if (err) {
+//     res.status(err.status || 500).json({ code: err.code || 'Error', message: err.toString() });
+//   }
+// });
 
 //Status table Association
 Status.hasMany(User 

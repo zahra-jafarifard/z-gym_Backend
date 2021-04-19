@@ -1,5 +1,6 @@
 const express = require("express");
 const router = express.Router();
+const { check, body } = require("express-validator");
 
 const authCheck = require("../shared/authCheck");
 const statusController = require("../controller/statusController");
@@ -34,7 +35,17 @@ const statusController = require("../controller/statusController");
  *                   type: string
  *
  */
-router.post("/create", authCheck, statusController.postCreate);
+router.post("/create", 
+[
+    body('statusName')
+    .isString()
+    .trim()
+    .isLength({ min: 3 })
+    .withMessage("Please Insert Valid Status Name"),
+
+]
+,
+authCheck, statusController.postCreate);
 /**
  * @swagger
  * /user_status/delete:
@@ -98,7 +109,17 @@ router.post("/delete", authCheck, statusController.postDelete);
  *                   type: string
  *
  */
-router.post("/update", authCheck, statusController.postUpdate);
+router.post("/update",
+[
+    body('name')
+    .isString()
+    .trim()
+    .isLength({ min: 3 })
+    .withMessage("Please Insert Valid Status Name"),
+
+]
+,
+authCheck, statusController.postUpdate);
 /**
  * @swagger
  * /user_status/list:
