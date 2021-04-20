@@ -73,11 +73,12 @@ exports.postUpdate = (req, res, next) => {
       .status(422)
       .json({ message: "validation failed", error: errors.array() });
   }
-  const id = +req.body.id + 1;
+  const id = +req.body.id ;
   const name = req.body.name;
 
   Muscle.findOne({
     where: {
+      flag:1,
       id: id,
     },
   })
@@ -129,6 +130,25 @@ exports.postSearch = (req, res, next) => {
     .then((msle) => {
       // console.log('msle' , msle);
       res.status(200).json({ muscle: msle });
+    })
+    .catch((e) => {
+      next(new httpError(e, 500));
+    });
+};
+
+
+exports.fetchForUpdate = (req, res, next) => {
+  console.log("fetchForUpdate");
+  const { id } = req.body;
+  Muscle.findOne({
+    where: {
+      flag: 1,
+      id: id,
+    },
+  })
+    .then((msl) => {
+      console.log("exeer", msl.dataValues);
+      res.status(200).json({data: msl.dataValues})
     })
     .catch((e) => {
       next(new httpError(e, 500));

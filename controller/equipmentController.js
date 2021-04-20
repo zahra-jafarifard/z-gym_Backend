@@ -142,3 +142,21 @@ exports.postSearch = (req, res, next) => {
       next(new httpError(e, 500));
     });
 };
+
+exports.fetchForUpdate = (req, res, next) => {
+  console.log("fetchForUpdate");
+  const { id } = req.body;
+  Equipment.findOne({
+    where: {
+      flag: 1,
+      id: id,
+    },
+  })
+    .then((eqp) => {
+      console.log("exeer", eqp.dataValues);
+      res.status(200).json({data: eqp.dataValues})
+    })
+    .catch((e) => {
+      next(new httpError(e, 500));
+    });
+};

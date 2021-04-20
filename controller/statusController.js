@@ -30,14 +30,12 @@ exports.postCreate = (req, res, next) => {
     })
     .then((createdStatus) => {
       // console.log(createdStatus)
-      return res
-        .status(201)
-        .json({
-          message: `new statuse ${createdStatus.dataValues.status_name} created...`,
-        });
+      return res.status(201).json({
+        message: `new statuse ${createdStatus.dataValues.status_name} created...`,
+      });
     })
     .catch((e) => {
-      next(new httpError("Fail in Fetching statusName ... ", 500));
+      next(new httpError(e, 500));
     });
 };
 
@@ -74,26 +72,47 @@ exports.postUpdate = (req, res, next) => {
       .status(422)
       .json({ message: "validation failed", error: errors.array() });
   }
-  const id = +req.body.id + 1;
+  const id = +req.body.id;
   const name = req.body.name;
 
+  const stNames = [];
+  Status.findAll()
+    .then((sts) => {
+      sts.map((s) => {
+        stNames.push(s.dataValues.status_name);
+      });
+    })
+    .catch((e) => console.log(e));
   Status.findOne({
     where: {
+      flag: 1,
       id: id,
     },
   })
     .then((st) => {
+      // console.log("ssssss", st.dataValues.status_name, name);
       if (!st) {
-        return next(new HttpError("there is not this status...", 404));
+        return next(new httpError("Doesnt Exist such a status...", 404));
       }
-      st.status_name = name;
-      return st.save();
+      const foundStName= stNames.every((st) => {
+        return st !== name
+      });
+      console.log('foundStName' , foundStName);
+      if(foundStName){
+        st.status_name = name;
+        return st.save().then(() => {
+          res
+            .status(200)
+            .json({ message: "status name updated successfully..." });
+        });
+      }
+      else{
+        throw(new httpError("status name is already Exist ...", 400));
+
+      }
     })
-    .then(() => {
-      res.status(200).json({ message: "status name updated successfully..." });
-    })
-    .catch(() => {
-      next(new httpError("Faild in fetching for updating", 500));
+    .catch((e) => {
+      next(new httpError(e, 500));
     });
 };
 
@@ -130,6 +149,24 @@ exports.postSearch = (req, res, next) => {
     .then((stus) => {
       // console.log('stus' , stus);
       res.status(200).json({ statuses: stus });
+    })
+    .catch((e) => {
+      next(new httpError(e, 500));
+    });
+};
+
+exports.fetchForUpdate = (req, res, next) => {
+  console.log("fetchForUpdate");
+  const { id } = req.body;
+  Status.findOne({
+    where: {
+      flag: 1,
+      id: id,
+    },
+  })
+    .then((st) => {
+      console.log("exeer", st.dataValues);
+      res.status(200).json({ data: st.dataValues });
     })
     .catch((e) => {
       next(new httpError(e, 500));

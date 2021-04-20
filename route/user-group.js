@@ -217,5 +217,7 @@ router.post("/list", authCheck, groupController.postList);
  * 
 */
 router.post("/search", authCheck, groupController.postSearch);
+router.post("/fetchForUpdate", authCheck, groupController.fetchForUpdate);
+
 
 module.exports = router;

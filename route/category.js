@@ -176,4 +176,6 @@ router.post("/list", authCheck, categoryController.postList);
 */
 router.post("/search", authCheck, categoryController.postSearch);
 
+router.post("/fetchForUpdate", authCheck, categoryController.fetchForUpdate);
+
 module.exports = router;

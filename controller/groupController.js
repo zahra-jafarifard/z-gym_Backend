@@ -86,7 +86,7 @@ exports.postUpdate = (req, res, next) => {
     },
   })
     .then((grp) => {
-      console.log("gggg", grp);
+      // console.log("gggg", grp);
       if (!grp) {
         return next(new httpError("Doesnt Exist this group...", 404));
       }
@@ -141,6 +141,25 @@ exports.postSearch = (req, res, next) => {
     .then((grps) => {
       // console.log('gggg' , grps);
       res.status(200).json({ groups: grps });
+    })
+    .catch((e) => {
+      next(new httpError(e, 500));
+    });
+};
+
+
+exports.fetchForUpdate = (req, res, next) => {
+  console.log("fetchForUpdate");
+  const { id } = req.body;
+  Group.findOne({
+    where: {
+      flag: 1,
+      id: id,
+    },
+  })
+    .then((grp) => {
+      // console.log("Group", grp.dataValues);
+      res.status(200).json({data: grp.dataValues})
     })
     .catch((e) => {
       next(new httpError(e, 500));

@@ -205,14 +205,17 @@ router.post(
       .isNumeric()
       .withMessage("Invalid Weight / Height"),
 
-    body("status", "group")
-      .notEmpty()
-      .withMessage("Status Group is required..."),
+    // body("status", "group")
+    //   .notEmpty()
+    //   .withMessage("Status Group is required..."),
   ],
   authCheck,
   authController.postUpdateMember
 );
 router.post("/members/delete", authCheck, authController.postDeleteMember);
+
+router.post("/members/fetchForUpdate", authCheck, authController.fetchForUpdate);
+
 router.post("/members/:id", authController.postFetchMember);
 
 module.exports = router;

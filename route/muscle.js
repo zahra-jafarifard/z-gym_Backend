@@ -177,5 +177,6 @@ router.post("/list", authCheck, muscleController.postList);
  * 
 */
 router.post("/search", authCheck, muscleController.postSearch);
+router.post("/fetchForUpdate", authCheck, muscleController.fetchForUpdate);
 
 module.exports = router;

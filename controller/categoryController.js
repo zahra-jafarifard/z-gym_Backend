@@ -50,7 +50,8 @@ exports.postDelete = (req, res, next) => {
     },
   })
     .then((cat) => {
-      console.log("caaaaaaat", cat);
+      // console.log("caaaaaaat", cat);
+      // console.log("caaaaaaatdatavalues", cat.dataValues);
       if (!cat) {
         return next(new httpError("not found category...", 404));
       } else {
@@ -74,7 +75,7 @@ exports.postUpdate = (req, res, next) => {
       .status(422)
       .json({ message: "validation failed", error: errors.array() });
   }
-  const id = +req.body.id + 1;
+  const id = +req.body.id ;
   const name = req.body.name;
 console.log('namecaaat' , name)
   Category.findOne({
@@ -137,6 +138,25 @@ exports.postSearch = (req, res, next) => {
     .then((cats) => {
       // console.log('cats' , cats);
       res.status(200).json({ categories: cats });
+    })
+    .catch((e) => {
+      next(new httpError(e, 500));
+    });
+};
+
+
+exports.fetchForUpdate = (req, res, next) => {
+  console.log("fetchForUpdate");
+  const { id } = req.body;
+  Category.findOne({
+    where: {
+      flag: 1,
+      id: id,
+    },
+  })
+    .then((cat) => {
+      console.log("exeer", cat.dataValues);
+      res.status(200).json({data: cat.dataValues})
     })
     .catch((e) => {
       next(new httpError(e, 500));

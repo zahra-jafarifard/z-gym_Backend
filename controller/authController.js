@@ -234,17 +234,19 @@ exports.postFetchMembers = (req, res, next) => {
     ],
   })
     .then((members) => {
+      // console.log('meeeeeemmembers', m.dataValues)
       const mem = [];
       members.map((m) => {
         mem.push(m.dataValues);
       });
-      // console.log('meeeeeem', mem)
+      console.log("meeeeeem", mem);
       return res.json({ members: mem });
     })
     .catch((e) => {
       next(new httpError(e.message, 500));
     });
 };
+
 exports.postFetchMember = (req, res, next) => {
   // console.log("parrrramid", req.params.id);
   const id = req.params.id;
@@ -404,8 +406,6 @@ exports.postCreateMember = (req, res, next) => {
     });
 };
 
-let grpId = "";
-let stId = "";
 exports.postUpdateMember = (req, res, next) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
@@ -423,44 +423,13 @@ exports.postUpdateMember = (req, res, next) => {
     height,
     gender,
     group,
+    password,
   } = req.body;
-  // console.log("boddddy", req.body);
-  userGroup
-    .findOne({
-      where: {
-        group_name: group,
-      },
-    })
-    .then((g) => {
-      console.log("gggg", g.dataValues.id);
-      if (g) {
-        grpId = g.dataValues.id;
-      } else {
-        grpId = group;
-      }
-    })
-    .catch((e) => console.log(e));
-
-  userStatus
-    .findOne({
-      where: {
-        status_name: status,
-      },
-    })
-    .then((s) => {
-      console.log("sss", s.dataValues.id);
-      if (s) {
-        stId = s.dataValues.id;
-      } else {
-        stId = status;
-      }
-    })
-    .catch((e) => console.log(e));
-
-  console.log("boddddyggggggsssss", grpId, stId);
+  console.log("boddddy", req.body);
 
   User.findOne({
     where: {
+      flag:1,
       mobile: mobile,
     },
     include: [
@@ -475,20 +444,43 @@ exports.postUpdateMember = (req, res, next) => {
     ],
   })
     .then((member) => {
-      // console.log('meeeeeeeeeeeem' , member)
-      (member.userGroupId = grpId),
-        (member.userStatusId = stId),
-        (member.name = name),
-        (member.lastName = lastName),
-        (member.mobile = mobile),
-        (member.birthDay = birthDay),
-        (member.weight = weight),
-        (member.height = height),
-        (member.gender = gender);
-      return member.save();
+      if (!member) {
+        return next(new httpError("not found member...", 404));
+      } 
+      // else {
+        // console.log('password111' , password , member.password)
+        // bcrypt.compare(password, member.password)
+        // let updatedpass;
+        // if(password !== member.password){
+        //     bcrypt.hash(password, 12)
+        //    .then((hashed) => {
+        //      console.log("hashed", hashed);
+        //      updatedpass=hashed;
+        //   console.log('password222111' , password , member.password ,updatedpass )
+
+        //   });
+
+        // }
+        // else{
+        //   updatedpass=password
+        //   console.log('password22233' , password , member.password )
+        // }
+
+        (member.userGroupId = group),
+          (member.userStatusId = status),
+          (member.name = name),
+          // (member.name = updatedpass),
+          (member.lastName = lastName),
+          (member.mobile = mobile),
+          (member.birthDay = birthDay),
+          (member.weight = weight),
+          (member.height = height),
+          (member.gender = gender);
+        return member.save()
+      // }
     })
     .then((updatedMember) => {
-      console.log("updatedMember", updatedMember.dataValues);
+      console.log('updatedMember' , updatedMember.dataValues  )
 
       res.status(200).json({ updatedMember: updatedMember });
     })
@@ -520,6 +512,24 @@ exports.postDeleteMember = (req, res, next) => {
     .then((deletedUser) => {
       console.log("dddddd", deletedUser);
       res.status(200).json({ message: "Deleting is done..." });
+    })
+    .catch((e) => {
+      next(new httpError(e, 500));
+    });
+};
+
+exports.fetchForUpdate = (req, res, next) => {
+  console.log("fetchForUpdate");
+  const { id } = req.body;
+  User.findOne({
+    where: {
+      flag: 1,
+      id: id,
+    },
+  })
+    .then((usr) => {
+      // console.log("user", usr.dataValues);
+      res.status(200).json({ data: usr.dataValues });
     })
     .catch((e) => {
       next(new httpError(e, 500));

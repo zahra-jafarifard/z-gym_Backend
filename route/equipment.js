@@ -113,5 +113,7 @@ router.post("/list", authCheck, equipmentController.postList);
  *                         example: دمبل
  */
 router.post("/search", authCheck, equipmentController.postSearch);
+router.post("/fetchForUpdate", authCheck, equipmentController.fetchForUpdate);
+
 
 module.exports = router;

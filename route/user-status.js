@@ -188,5 +188,6 @@ router.post("/list", authCheck, statusController.postList);
  *
  */
 router.post("/search", authCheck, statusController.postSearch);
+router.post("/fetchForUpdate", authCheck, statusController.fetchForUpdate);
 
 module.exports = router;
