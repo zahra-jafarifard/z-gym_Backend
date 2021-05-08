@@ -12,6 +12,7 @@ const category = sequelize.define("category", {
   category_name: {
     type: Sequelize.STRING,
     required: true,
+    unique: true
   },
   flag: {
     type: Sequelize.BOOLEAN,

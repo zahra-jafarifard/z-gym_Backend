@@ -75,14 +75,6 @@ exports.postUpdate = (req, res, next) => {
   const id = +req.body.id;
   const name = req.body.name;
 
-  const stNames = [];
-  Status.findAll()
-    .then((sts) => {
-      sts.map((s) => {
-        stNames.push(s.dataValues.status_name);
-      });
-    })
-    .catch((e) => console.log(e));
   Status.findOne({
     where: {
       flag: 1,
@@ -90,26 +82,15 @@ exports.postUpdate = (req, res, next) => {
     },
   })
     .then((st) => {
-      // console.log("ssssss", st.dataValues.status_name, name);
       if (!st) {
         return next(new httpError("Doesnt Exist such a status...", 404));
       }
-      const foundStName= stNames.every((st) => {
-        return st !== name
-      });
-      console.log('foundStName' , foundStName);
-      if(foundStName){
         st.status_name = name;
         return st.save().then(() => {
           res
             .status(200)
             .json({ message: "status name updated successfully..." });
         });
-      }
-      else{
-        throw(new httpError("status name is already Exist ...", 400));
-
-      }
     })
     .catch((e) => {
       next(new httpError(e, 500));

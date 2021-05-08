@@ -1,7 +1,7 @@
 const Sequelize = require("sequelize");
 
 const sequelize = require("./sequelize");
-const equipment = sequelize.define("equipment", {
+const gymType = sequelize.define("gymType", {
   id: {
     type: Sequelize.INTEGER,
     allowNull: false,
@@ -9,7 +9,7 @@ const equipment = sequelize.define("equipment", {
     primaryKey: true,
     required: true,
   },
-  equipment_name: {
+  name: {
     type: Sequelize.STRING,
     required: true,
     unique: true
@@ -18,6 +18,8 @@ const equipment = sequelize.define("equipment", {
     type: Sequelize.BOOLEAN,
     allowNull: true,
   },
+  
+ 
 });
 
-module.exports = equipment;
+module.exports = gymType;

@@ -39,7 +39,7 @@ router.post("/create",
     body("muscleName")
     .isString()
     .trim()
-    .isLength({ min: 5 })
+    .isLength({ min: 2 })
     .withMessage("Please Insert Valid Muscle Name")
 ]
 ,authCheck, muscleController.postCreate);
@@ -110,7 +110,7 @@ router.post("/update",
     body("name")
     .isString()
     .trim()
-    .isLength({ min: 5 })
+    .isLength({ min: 2 })
     .withMessage("Please Insert Valid Muscle Name")
 ]
 ,authCheck, muscleController.postUpdate);

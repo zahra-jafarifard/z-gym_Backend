@@ -24,6 +24,7 @@ const User = sequelize.define("User", {
   mobile: {
     type: Sequelize.STRING,
     required: true,
+    unique: true
   },
   gender: {
     type: Sequelize.STRING,
@@ -60,6 +61,14 @@ const User = sequelize.define("User", {
   },
   flag: {
     type: Sequelize.BOOLEAN,
+    allowNull: true,
+  },
+  userStatusId :{
+    type: Sequelize.INTEGER,
+    allowNull: true,
+  },
+  userGroupId :{
+    type: Sequelize.INTEGER,
     allowNull: true,
   },
 });

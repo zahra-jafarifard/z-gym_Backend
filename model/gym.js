@@ -1,7 +1,7 @@
 const Sequelize = require("sequelize");
 
 const sequelize = require("./sequelize");
-const exercise = sequelize.define("exercise", {
+const gym = sequelize.define("gym", {
   id: {
     type: Sequelize.INTEGER,
     allowNull: false,
@@ -14,18 +14,30 @@ const exercise = sequelize.define("exercise", {
     required: true,
     unique: true
   },
-  description: {
-    type: Sequelize.TEXT,
-    required: true,
+  location: {
+    type: Sequelize.GEOMETRY("POINT", 4326),
+    // required: true,
   },
-  icon: {
-    type: Sequelize.STRING,
+  address: {
+    type: Sequelize.TEXT,
     required: true,
   },
   flag: {
     type: Sequelize.BOOLEAN,
     allowNull: true,
   },
+  status: {
+    type: Sequelize.BOOLEAN,
+    required: true,
+  },
+  phoneNumber: {
+    type: Sequelize.INTEGER,
+    required: true,
+  },
+  gender: {
+    type: Sequelize.STRING,
+    required: true,
+  },
 });
 
-module.exports = exercise;
+module.exports = gym;

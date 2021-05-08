@@ -12,6 +12,7 @@ const muscle = sequelize.define("muscle", {
   muscle_name: {
     type: Sequelize.STRING,
     required: true,
+    unique: true
   },
   flag: {
     type: Sequelize.BOOLEAN,

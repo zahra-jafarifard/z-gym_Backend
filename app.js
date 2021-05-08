@@ -10,6 +10,11 @@ const Status = require('./model/user-status');
 const Group = require('./model/user-group');
 const Exercise = require('./model/exercise');
 const Category = require('./model/category');
+const WorkOut = require('./model/workOut');
+const WorkOutDetails = require('./model/workOutDetails');
+const DaysOfWeek = require('./model/daysOfWeek');
+const Gym = require('./model/gym');
+const GymType = require('./model/gymType');
 
 const httpError = require('./shared/httpError')
 const sequelize = require('./model/sequelize');
@@ -20,6 +25,9 @@ const categoryRoute = require('./route/category');
 const equipmentRoute = require('./route/equipment');
 const muscleRoute = require('./route/muscle');
 const exerciseRoute = require('./route/exercise');
+const gymRoute = require('./route/gym');
+const daysOfWeek = require('./route/daysOfWeek');
+const gymType = require('./route/gymType');
 require('dotenv').config();
 
 app.use(bodyParser.json());
@@ -84,11 +92,14 @@ app.use((req,res,next) =>{
 
 app.use(authRoute);
 app.use('/user_status', statusRoute);
+app.use('/gym', gymRoute);
 app.use('/user_group', groupRoute);
 app.use('/category', categoryRoute);
 app.use('/equipment', equipmentRoute);
 app.use('/muscle', muscleRoute);
 app.use('/exercise' ,exerciseRoute);
+app.use('/daysOfWeek' ,daysOfWeek);
+app.use('/gymType' ,gymType);
 
 //handle 404 error
 app.use((req,res,next) => {
@@ -101,35 +112,44 @@ app.use((req,res,next) => {
 //   }
 // });
 
-//Status table Association
-Status.hasMany(User 
-  ,{
-    foreignKey: {
-      allowNull: false,
-      defaultValue: 1
-    }
-  }
-  );
+// { onUpdate: 'cascade', hooks: true } ..... by default 
+Status.hasMany(User,
+  { onDelete: 'cascade', hooks: true });
+ User.belongsTo(Status,
+  { onDelete: 'cascade', hooks: true });
 
- User.belongsTo(Status);
 
-Group.hasMany(User
-   ,{
-    foreignKey: {
-      allowNull: false,
-      defaultValue: 1
-    }
-  });
- User.belongsTo(Group);
+
+Group.hasMany(User ,
+  { onDelete: 'cascade', hooks: true });
+ User.belongsTo(Group,
+  { onDelete: 'cascade', hooks: true });
 
 Exercise.belongsTo(Category);
 Category.hasMany(Exercise);
 
+User.hasMany(WorkOut);
+// WorkOut.belongsTo(User)
+
+// WorkOutDetails.belongsToMany(DaysOfWeek ,  { through: 'workDays' });
+// DaysOfWeek.belongsToMany(WorkOutDetails ,  { through: 'workDays' })
+
+Gym.belongsTo(User , { foreignKey: 'managerId' });
+// User.hasMany(Gym);
+
+Gym.belongsTo(GymType);
+// GymType.hasMany(Gym);
+
 
 
 sequelize
-.sync()
-// .sync({force:true})
+.query('SET FOREIGN_KEY_CHECKS = 0')
+.then(()=>{
+  sequelize
+  .sync()
+  // .sync({force:true})
+})
+
 .then(() => {
     app.listen(process.env.PORT , ()=>{
         console.log(`Your port is ${process.env.PORT}`);

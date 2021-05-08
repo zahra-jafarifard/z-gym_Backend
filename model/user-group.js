@@ -12,6 +12,7 @@ const userGroup = sequelize.define("userGroup", {
   group_name: {
     type: Sequelize.STRING,
     required: true,
+    unique: true
   },
   group_status: {
     type: Sequelize.BOOLEAN,

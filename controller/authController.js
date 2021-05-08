@@ -27,13 +27,13 @@ exports.postRegister = (req, res, next) => {
     height,
     weight,
   } = req.body;
-  // console.log(req.body);
+  console.log(req.body);
   // if (!name || !lastName || !mobile || !password || !repaetPassword || !gender || !birthDay || !height || !weight){
   //     throw new httpError('unauthurized  user...' , 401);
   // }
-  if (password != repaetPassword) {
-    throw new httpError("password and repeat arent match...", 401);
-  }
+  // if (password !== repaetPassword) {
+  //   throw new httpError("password and repeat arent match...", 401);
+  // }
   bcrypt
     .hash(password, 12)
     .then((hashPassword) => {
@@ -102,22 +102,25 @@ exports.postLogin = (req, res, next) => {
             token = jwt.sign(
               { mobile: user.mobile, userId: user.id },
               "mySecretKey",
-              { expiresIn: "2h" }
+              // { expiresIn: "2h" }
             );
           } else {
             token = jwt.sign(
               { mobile: user.mobile, userId: user.id },
               "mySecretKey",
-              { expiresIn: "1h" }
+              // { expiresIn: Date.now() + 3600 }
             );
           }
           user.token = token;
           return user.save().then(() => {
-            console.log("usser:", user.dataValues.mobile);
-            console.log("tokkkken:", token);
+            // const decodedToken = jwt.verify(token, "mySecretKey")
+            // console.log("decodedToken1:", decodedToken);
+            // const exp=new Date(decodedToken.exp)
+            // console.log("decodedToken1:", exp);
             res
               .status(200)
               .json({ userMobile: user.dataValues.mobile, token: token });
+            // .json({ userMobile: user.dataValues.mobile, token: token , expiresIn:exp});
           });
         }
       })
@@ -239,7 +242,7 @@ exports.postFetchMembers = (req, res, next) => {
       members.map((m) => {
         mem.push(m.dataValues);
       });
-      console.log("meeeeeem", mem);
+      // console.log("meeeeeem", mem);
       return res.json({ members: mem });
     })
     .catch((e) => {
@@ -279,9 +282,15 @@ exports.postFetchMember = (req, res, next) => {
     ],
   })
     .then((member) => {
-      //  console.log('mmmmeeeem' , member.dataValues)
+      // console.log("mmmmeeeem", member.dataValues);
+      // console.log("m1", member.dataValues.userGroup.dataValues.group_name);
+      // console.log("m2", member.dataValues.userStatus.dataValues.status_name);
 
-      res.json({ user: member.dataValues });
+      return res.json({
+        user: member.dataValues,
+        status: member.dataValues.userStatus.dataValues.status_name,
+        group: member.dataValues.userGroup.dataValues.group_name,
+      });
     })
     .catch((e) => {
       next(new httpError(e.message, 500));
@@ -364,7 +373,7 @@ exports.postCreateMember = (req, res, next) => {
     status,
     group,
   } = req.body;
-  // console.log("boooooody", req.body);
+  console.log("boooooody", req.body);
   // if (!name || !lastName || !mobile || !password || !gender || !birthDay || !height || !weight || !status || !group){
   //     throw(new httpError('unauthurized  user...' , 401));
   // }
@@ -372,17 +381,31 @@ exports.postCreateMember = (req, res, next) => {
   bcrypt
     .hash(password, 12)
     .then((hashPassword) => {
-      console.log(hashPassword);
+      // console.log(hashPassword);
       return User.findOne({
         where: {
           mobile: mobile,
+          flag:1
         },
       }).then((user) => {
         if (user) {
           next(new httpError("User Already Exist...", 500));
           res.status(500).json({ error: "User Already Exist..." });
         } else {
-          return User.create({
+          if(!status && !group){
+             return User.create({
+              name,
+              lastName,
+              mobile,
+              password: hashPassword,
+              gender,
+              birthDay,
+              height,
+              weight,
+              flag: 1,
+            })
+          }else{ 
+           return User.create({
             name,
             lastName,
             mobile,
@@ -394,11 +417,14 @@ exports.postCreateMember = (req, res, next) => {
             userStatusId: status,
             userGroupId: group,
             flag: 1,
-          }).then((createdUser) => {
-            // console.log('createdUUUser' , createdUser)
-            return res.status(201).json({ user: createdUser });
-          });
+          })
         }
+          
+        }
+      })
+      .then((createdUser) => {
+        // console.log('createdUUUser' , createdUser)
+        return res.status(201).json({ user: createdUser });
       });
     })
     .catch((e) => {
@@ -429,58 +455,50 @@ exports.postUpdateMember = (req, res, next) => {
 
   User.findOne({
     where: {
-      flag:1,
+      flag: 1,
       mobile: mobile,
     },
-    include: [
-      {
-        model: userGroup,
-        attributes: ["group_name"],
-      },
-      {
-        model: userStatus,
-        attributes: ["status_name"],
-      },
-    ],
+    // include: [
+    //   {
+    //     model: userGroup,
+    //     attributes: ["group_name"],
+    //   },
+    //   {
+    //     model: userStatus,
+    //     attributes: ["status_name"],
+    //   },
+    // ],
   })
     .then((member) => {
       if (!member) {
         return next(new httpError("not found member...", 404));
-      } 
-      // else {
-        // console.log('password111' , password , member.password)
-        // bcrypt.compare(password, member.password)
-        // let updatedpass;
-        // if(password !== member.password){
-        //     bcrypt.hash(password, 12)
-        //    .then((hashed) => {
-        //      console.log("hashed", hashed);
-        //      updatedpass=hashed;
-        //   console.log('password222111' , password , member.password ,updatedpass )
-
-        //   });
-
-        // }
-        // else{
-        //   updatedpass=password
-        //   console.log('password22233' , password , member.password )
-        // }
+      }
+      if(!group && !status){
+        (member.name = name),
+        (member.lastName = lastName),
+        (member.mobile = mobile),
+        (member.birthDay = birthDay),
+        (member.weight = weight),
+        (member.height = height),
+        (member.gender = gender);
+      return member.save();
+      }else{
 
         (member.userGroupId = group),
-          (member.userStatusId = status),
-          (member.name = name),
-          // (member.name = updatedpass),
-          (member.lastName = lastName),
-          (member.mobile = mobile),
-          (member.birthDay = birthDay),
-          (member.weight = weight),
-          (member.height = height),
-          (member.gender = gender);
-        return member.save()
+        (member.userStatusId = status),
+        (member.name = name),
+        (member.lastName = lastName),
+        (member.mobile = mobile),
+        (member.birthDay = birthDay),
+        (member.weight = weight),
+        (member.height = height),
+        (member.gender = gender);
+        return member.save();
+      }
       // }
     })
     .then((updatedMember) => {
-      console.log('updatedMember' , updatedMember.dataValues  )
+      console.log("updatedMember", updatedMember.dataValues);
 
       res.status(200).json({ updatedMember: updatedMember });
     })
@@ -519,7 +537,6 @@ exports.postDeleteMember = (req, res, next) => {
 };
 
 exports.fetchForUpdate = (req, res, next) => {
-  console.log("fetchForUpdate");
   const { id } = req.body;
   User.findOne({
     where: {
