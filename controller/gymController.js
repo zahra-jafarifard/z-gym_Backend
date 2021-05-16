@@ -3,6 +3,8 @@ const Gym = require("../model/gym");
 const GymType = require("../model/gymType");
 const User = require("../model/user");
 const { validationResult } = require("express-validator/check");
+const { Op } = require("sequelize");
+
 
 exports.postCreate = (req, res, next) => {
   const errors = validationResult(req);
@@ -12,7 +14,8 @@ exports.postCreate = (req, res, next) => {
       .json({ message: "validation failed", error: errors.array() });
   }
 
-  let { name, phoneNumber, gender, status, address, location } = req.body;
+  let { name, phoneNumber, gender, status, address, location , manager , gymsType } = req.body;
+  console.log(req.body)
 
   return Gym.findOne({
     where: {
@@ -30,8 +33,10 @@ exports.postCreate = (req, res, next) => {
         gender,
         status,
         address,
-        location,
+        // location,
         flag: 1,
+        gymTypeId:gymsType,
+        managerId:manager
       });
     })
     .then((createdGym) => {
@@ -116,10 +121,27 @@ exports.postList = (req, res, next) => {
     where: {
       flag: 1,
     },
+    include: [
+      {
+        model: GymType,
+
+        attributes: ["name"],
+      },
+      {
+        model: User,
+        attributes: ["name" , "lastName"],
+      },
+    ],
   })
     .then((gyms) => {
-      // console.log('gyms' ,gyms)
-      res.status(200).json({ gyms: gyms });
+      // console.log('gyms......' ,gyms[0].dataValues.User.dataValues);
+
+      const gymArray = [];
+      gyms.map((g) => {
+        gymArray.push(g.dataValues);
+      });
+      // console.log('gymArray' ,gymArray);
+      res.status(200).json({ gyms: gymArray });
     })
     .catch((e) => {
       next(new httpError(e, 500));
@@ -127,27 +149,35 @@ exports.postList = (req, res, next) => {
 };
 
 exports.postSearch = (req, res, next) => {
-  let { name, phoneNumber, gender, status, address, location } = req.body;
+  let { name, phoneNumber, gender, status, address, location , manager , gymsType } = req.body;
+
+  // console.log('reeeqbooody' , req.body)
 
   Gym.findAll({
-    attributes: [
-      "name",
-      "phoneNumber",
-      "gender",
-      "status",
-      "address",
-      "location",
-    ],
-    where: {
-      [Op.or]: [
+       where: {
+         [Op.or]: [
         { name: name },
         { phoneNumber: phoneNumber },
         { status: status },
         { address: address },
         { location: location },
         { gender: gender },
+        { managerId: manager },
+        { gymTypeId: gymsType},
       ],
     },
+    include: [
+      {
+        model: User,
+
+        attributes: ["id","name"],
+      },
+      {
+        model: GymType,
+
+        attributes: ["id","name"],
+      },
+    ],
   })
     .then((gyms) => {
       // console.log('gyms' , gyms);
@@ -173,7 +203,7 @@ exports.fetchForUpdate = (req, res, next) => {
       },
       {
         model: User,
-        attributes: ["name" , "lastName" , "mobile"],
+        attributes: ["name" , "lastName"],
       },
     ],
   })

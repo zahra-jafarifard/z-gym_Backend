@@ -1,5 +1,10 @@
 const Sequelize = require("sequelize");
 
+const Exercise = require("./exercise");
+const DaysOfWeek = require("./daysOfWeek");
+const WorkOut = require("./workOut");
+
+
 const sequelize = require("./sequelize");
 const workOutDetails = sequelize.define("workOutDetails", {
   id: {
@@ -9,7 +14,7 @@ const workOutDetails = sequelize.define("workOutDetails", {
     primaryKey: true,
     required: true,
   },
-  descriptipn: {
+  description: {
     type: Sequelize.TEXT,
     required: true,
   },
@@ -28,37 +33,20 @@ const workOutDetails = sequelize.define("workOutDetails", {
   weight: {
     type: Sequelize.INTEGER,
   },
-  workoutId:{
-    type: Sequelize.INTEGER,
-    references: {
-      model: 'workouts',
-      key: 'id',
-    },
-    onDelete: 'CASCADE',
-    onUpdate: 'CASCADE',
-    allowNull: false
-  },
-  daysOfWeekId:{
-    type: Sequelize.INTEGER,
-    references: {
-      model: 'daysOfWeeks',
-      key: 'id',
-    },
-    onDelete: 'CASCADE',
-    onUpdate: 'CASCADE',
-    allowNull: false
-  },
-  exerciseId:{
-    type: Sequelize.INTEGER,
-    references: {
-      model: 'exercises',
-      key: 'id',
-    },
-    onDelete: 'CASCADE',
-    onUpdate: 'CASCADE',
-    allowNull: false
-  },
   
 });
+
+
+// workOutDetails.associate = (models) => {
+//   workOutDetails.belongsTo(models.Exercise, {
+//     foreignKey: 'exersiceId'
+//   });
+//   workOutDetails.belongsTo(models.WorkOut, {
+//     foreignKey: 'workOutId'
+//   });
+//   workOutDetails.belongsTo(models.DaysOfWeek, {
+//     foreignKey: 'daysOfWeekId'
+//   });
+// };
 
 module.exports = workOutDetails;

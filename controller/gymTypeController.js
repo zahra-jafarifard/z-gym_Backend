@@ -107,7 +107,7 @@ exports.postList = (req, res, next) => {
   })
     .then((gTypes) => {
       // console.log('caaaa' ,gTypes)
-      res.status(200).json({ gTypes: gTypes });
+      res.status(200).json({ gymsTypes: gTypes });
     })
     .catch((e) => {
       next(new httpError(e, 500));

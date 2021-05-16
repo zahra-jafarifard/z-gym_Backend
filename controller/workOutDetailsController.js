@@ -1,6 +1,5 @@
 const httpError = require("../shared/httpError");
 const workOutDetails = require("../model/workOutDetails");
-const GymType = require("../model/gymType");
 const User = require("../model/user");
 const { validationResult } = require("express-validator/check");
 
@@ -12,27 +11,21 @@ exports.postCreate = (req, res, next) => {
       .json({ message: "validation failed", error: errors.array() });
   }
 
-  let {days , exercise , user, reps , set , weight , description } = req.body;
+  let {days , exercise , workout, reps , set , weight , description } = req.body;
 
-  return workOutDetails.findOne({
-    where: {
+ 
+    return workOutDetails.create({
       flag: 1,
-      days,
-      exercise,
-      user
-    },
-  })
-    .then((workDetails) => {
-      if (workDetails) {
-        throw new httpError("workDetails is already exist... ", 500);
-      }
-      return workOutDetails.create({
-        flag: 1,
-        
-      });
+      days ,
+      exercise ,
+      workout,
+      reps , 
+      set , 
+      weight , 
+      description
     })
     .then((createdWork) => {
-      // console.log(createdWork)
+      // console.log(createdWork);
       return res.status(200).json({
         message: `new createdWork ${createdWork.dataValues.name} created...`,
       });
@@ -44,22 +37,22 @@ exports.postCreate = (req, res, next) => {
 
 exports.postDelete = (req, res, next) => {
   const { id } = req.body;
-  console.log("gym id", id);
+  console.log("workOutDetails id", id);
   workOutDetails.findOne({
     where: {
       flag: 1,
       id: id,
     },
   })
-    .then((gym) => {
-      // console.log("caaaaaaat", gym);
-      // console.log("caaaaaaatdatavalues", gym.dataValues);
-      if (!gym) {
-        return next(new httpError("not found gym...", 404));
+    .then((workOutD) => {
+      // console.log("caaaaaaat", workOutD);
+      // console.log("caaaaaaatdatavalues", workOutD.dataValues);
+      if (!workOutD) {
+        return next(new httpError("not found workOutD...", 404));
       } else {
-        // console.log('gym id db', gym.id);
-        gym.flag = 0;
-        return gym.save();
+        // console.log('workOutD id db', workOutD.id);
+        workOutD.flag = 0;
+        return workOutD.save();
       }
     })
     .then(() => {
@@ -78,29 +71,29 @@ exports.postUpdate = (req, res, next) => {
       .json({ message: "validation failed", error: errors.array() });
   }
   const id = +req.body.id;
-  let {reps , set , weight , description } = req.body;
-
-  console.log("nameggyyym", name);
+  
+  let {days , exercise , workout, reps , set , weight , description } = req.body;
   workOutDetails.findOne({
     where: {
       flag: 1,
       id: id,
     },
   })
-    .then((gym) => {
-      console.log("namecaaatdddd", gym);
+    .then((workOutD) => {
+      console.log("namecaaatdddd", workOutD);
 
-      if (!gym) {
-        return next(new HttpError("there is not this gym...", 404));
+      if (!workOutD) {
+        return next(new HttpError("there is not this workOutD...", 404));
       }
-      gym.name = name;
-      gym.phoneNumber = phoneNumber;
-      gym.gender = gender;
-      gym.status = status;
-      gym.address = address;
-      gym.location = location;
-      return gym.save().then(() => {
-        res.status(200).json({ message: "gym name updated successfully..." });
+      workOutD.daysOfWeekId = days;
+      workOutD.exerciseId =exercise;
+      workOutD.workoutId = workout;
+      workOutD.reps = reps;
+      workOutD.set = set;
+      workOutD.weight = weight;
+      workOutD.description = description;
+      return workOutD.save().then(() => {
+        res.status(200).json({ message: "workOutD name updated successfully..." });
       });
     })
     .catch((e) => {
@@ -114,9 +107,9 @@ exports.postList = (req, res, next) => {
       flag: 1,
     },
   })
-    .then((gyms) => {
-      // console.log('gyms' ,gyms)
-      res.status(200).json({ gyms: gyms });
+    .then((workOutDetails) => {
+      // console.log('workOutDetails' ,workOutDetails)
+      res.status(200).json({ workOutDetails: workOutDetails });
     })
     .catch((e) => {
       next(new httpError(e, 500));
@@ -124,8 +117,8 @@ exports.postList = (req, res, next) => {
 };
 
 exports.postSearch = (req, res, next) => {
-  let { reps , set , weight , description } = req.body;
-
+  
+  let {days , exercise , workout, reps , set , weight , description } = req.body;
   workOutDetails.findAll({
     attributes: [
       "name",
@@ -137,18 +130,19 @@ exports.postSearch = (req, res, next) => {
     ],
     where: {
       [Op.or]: [
-        { name: name },
-        { phoneNumber: phoneNumber },
-        { status: status },
-        { address: address },
-        { location: location },
-        { gender: gender },
+        { daysOfWeekId: days },
+        { exerciseId: exercise },
+        { workoutId: workout },
+        { reps: reps },
+        { set: set },
+        { weight: weight },
+        { description: description },
       ],
     },
   })
-    .then((gyms) => {
-      // console.log('gyms' , gyms);
-      res.status(200).json({ gyms: gyms });
+    .then((workOutDetails) => {
+      // console.log('workOutDetails' , workOutDetails);
+      res.status(200).json({ workOutDetails: workOutDetails });
     })
     .catch((e) => {
       next(new httpError(e, 500));
@@ -163,16 +157,16 @@ exports.fetchForUpdate = (req, res, next) => {
       flag: 1,
       id: id,
     },
-    include: [
-      {
-        model: User,
-        attributes: ["name" , "lastName" , "mobile"],
-      },
-    ],
+    // include: [
+    //   {
+    //     model: User,
+    //     attributes: ["name" , "lastName" , "mobile"],
+    //   },
+    // ],
   })
-    .then((gym) => {
-      console.log("exeer", gym.dataValues);
-      res.status(200).json({ data: gym.dataValues });
+    .then((workOutD) => {
+      console.log("exeer", workOutD.dataValues);
+      res.status(200).json({ data: workOutD.dataValues });
     })
     .catch((e) => {
       next(new httpError(e, 500));

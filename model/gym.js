@@ -9,6 +9,10 @@ const gym = sequelize.define("gym", {
     primaryKey: true,
     required: true,
   },
+  flag: {
+    type: Sequelize.BOOLEAN,
+    allowNull: true,
+  },
   name: {
     type: Sequelize.STRING,
     required: true,
@@ -21,10 +25,6 @@ const gym = sequelize.define("gym", {
   address: {
     type: Sequelize.TEXT,
     required: true,
-  },
-  flag: {
-    type: Sequelize.BOOLEAN,
-    allowNull: true,
   },
   status: {
     type: Sequelize.BOOLEAN,

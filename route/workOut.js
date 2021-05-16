@@ -4,10 +4,10 @@ const { check, body } = require("express-validator");
 
 const authCheck = require("../shared/authCheck");
 
-const gymController = require("../controller/gymController");
+const workOutController = require("../controller/workOutController");
 
-router.post("/list", authCheck, gymController.postList);
-router.post("/search", authCheck, gymController.postSearch);
+router.post("/list", authCheck, workOutController.postList);
+router.post("/search", authCheck, workOutController.postSearch);
 router.post(
   "/create",
   [
@@ -40,7 +40,7 @@ router.post(
   ],
   authCheck,
 
-  gymController.postCreate
+  workOutController.postCreate
 );
 
 router.post(
@@ -74,10 +74,10 @@ router.post(
       .withMessage("Invalid address"),
   ],
   authCheck,
-  gymController.postUpdate
+  workOutController.postUpdate
 );
 
-router.post("/delete", authCheck, gymController.postDelete);
-router.post("/fetchForUpdate", authCheck, gymController.fetchForUpdate);
+router.post("/delete", authCheck, workOutController.postDelete);
+router.post("/fetchForUpdate", authCheck, workOutController.fetchForUpdate);
 
 module.exports = router;

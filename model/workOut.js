@@ -1,4 +1,5 @@
 const Sequelize = require("sequelize");
+const moment= require('moment')
 
 const sequelize = require("./sequelize");
 const workOut = sequelize.define("workOut", {
@@ -17,38 +18,25 @@ const workOut = sequelize.define("workOut", {
     type: Sequelize.BOOLEAN,
     allowNull: true,
   },
-  descriptipn: {
+  description: {
     type: Sequelize.TEXT,
     required: true,
   },
   startDate: {
-    type: Sequelize.DATE,
+    type: Sequelize.DATEONLY,
     required: true,
-  },
-  endDate: {
-    type: Sequelize.DATE,
-    required: true,
-  },
-  createdById:{
-    type: Sequelize.INTEGER,
-    references: {
-      model: 'users',
-      key: 'id',
+    get: function() {
+      return moment.utc(this.getDataValue('startDate')).format('YYYY-MM-DD');
     },
-    onDelete: 'CASCADE',
-    onUpdate: 'CASCADE',
-    allowNull: false
   },
-  // userId:{
-  //   type: Sequelize.INTEGER,
-  //   references: {
-  //     model: 'users',
-  //     key: 'id',
-  //   },
-  //   onDelete: 'CASCADE',
-  //   onUpdate: 'CASCADE',
-  //   allowNull: false
-  // },
+
+  endDate: {
+    type: Sequelize.DATEONLY,
+    required: true,
+    get: function() {
+      return moment.utc(this.getDataValue('endDate')).format('YYYY-MM-DD');
+    }
+  },
   
 });
 

@@ -232,7 +232,7 @@ router.post("/list", authCheck, exerciseController.postList);
  *                         type: string
  *                         description: The user's name.
  *                         example: اسکوات
- *                       descriptipn:
+ *                       description:
  *                         type: integer
  *                         description: The user ID.
  *                         example: برای بزرگ کردن باسن
