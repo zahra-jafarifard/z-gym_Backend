@@ -31,6 +31,7 @@ const gymRoute = require("./route/gym");
 const daysOfWeekRoute = require("./route/daysOfWeek");
 const gymTypeRoute = require("./route/gymType");
 const workOutRoute = require("./route/workOut");
+const workOutDetailsRoute = require("./route/workOutDetails");
 require("dotenv").config();
 
 app.use(bodyParser.json());
@@ -99,6 +100,7 @@ app.use("/exercise", exerciseRoute);
 app.use("/daysOfWeek", daysOfWeekRoute);
 app.use("/gymType", gymTypeRoute);
 app.use("/workOut", workOutRoute);
+app.use("/workOutDetails", workOutDetailsRoute);
 
 //handle 404 error
 app.use((req, res, next) => {
@@ -151,8 +153,8 @@ Gym.belongsTo(GymType , { onDelete: "cascade", hooks: true });
 sequelize
   .query("SET FOREIGN_KEY_CHECKS = 0")
   .then(() => {
-    // sequelize.sync();
-    sequelize.sync({force:true})
+    sequelize.sync();
+    // sequelize.sync({force:true})
   })
 
   .then(() => {

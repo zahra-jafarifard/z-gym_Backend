@@ -1,7 +1,8 @@
 const httpError = require("../shared/httpError");
 const workOutDetails = require("../model/workOutDetails");
+const { Op } = require("sequelize");
 const User = require("../model/user");
-const { validationResult } = require("express-validator/check");
+const { validationResult, body } = require("express-validator/check");
 
 exports.postCreate = (req, res, next) => {
   const errors = validationResult(req);
@@ -72,7 +73,8 @@ exports.postUpdate = (req, res, next) => {
   }
   const id = +req.body.id;
   
-  let {days , exercise , workout, reps , set , weight , description } = req.body;
+  let { reps , set , weight , description } = req.body;
+  // console.log('booooooooooooooody',req.body) ;
   workOutDetails.findOne({
     where: {
       flag: 1,
@@ -83,17 +85,14 @@ exports.postUpdate = (req, res, next) => {
       console.log("namecaaatdddd", workOutD);
 
       if (!workOutD) {
-        return next(new HttpError("there is not this workOutD...", 404));
+        return next(new httpError("there is not this workOutD...", 404));
       }
-      workOutD.daysOfWeekId = days;
-      workOutD.exerciseId =exercise;
-      workOutD.workoutId = workout;
-      workOutD.reps = reps;
-      workOutD.set = set;
+      workOutD.reps= reps;
       workOutD.weight = weight;
       workOutD.description = description;
+      workOutD.set=set;
       return workOutD.save().then(() => {
-        res.status(200).json({ message: "workOutD name updated successfully..." });
+        res.status(200).json({ message: "workOutD  updated successfully..." });
       });
     })
     .catch((e) => {
@@ -108,7 +107,7 @@ exports.postList = (req, res, next) => {
     },
   })
     .then((workOutDetails) => {
-      // console.log('workOutDetails' ,workOutDetails)
+      console.log('workOutDetails' ,workOutDetails)
       res.status(200).json({ workOutDetails: workOutDetails });
     })
     .catch((e) => {
@@ -118,21 +117,16 @@ exports.postList = (req, res, next) => {
 
 exports.postSearch = (req, res, next) => {
   
-  let {days , exercise , workout, reps , set , weight , description } = req.body;
+  let { reps , set , weight , description } = req.body;
   workOutDetails.findAll({
-    attributes: [
-      "name",
-      "phoneNumber",
-      "gender",
-      "status",
-      "address",
-      "location",
-    ],
+    // attributes: [
+    //   "reps",
+    //   "set",
+    //   "weight",
+    //   "description",
+    // ],
     where: {
       [Op.or]: [
-        { daysOfWeekId: days },
-        { exerciseId: exercise },
-        { workoutId: workout },
         { reps: reps },
         { set: set },
         { weight: weight },
@@ -141,7 +135,7 @@ exports.postSearch = (req, res, next) => {
     },
   })
     .then((workOutDetails) => {
-      // console.log('workOutDetails' , workOutDetails);
+      console.log('workOutDetails' , workOutDetails);
       res.status(200).json({ workOutDetails: workOutDetails });
     })
     .catch((e) => {
